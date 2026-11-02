@@ -1,0 +1,17 @@
+# Production on the VPS. Deploy with ./deploy.sh (git pull + rebuild).
+# Served by the shared nginx in ~/proxy (conf.d/mscs.conf) as container mscs-curr-rev-web-1.
+name: mscs-curr-rev
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    volumes:
+      # Live data lives outside the git checkout so edits survive deploys and never
+      # conflict with git pull. deploy.sh seeds it from the repo copy the first time.
+      - ${DATA_DIR:-../mscs-curr-rev-data}/form_data.json:/app/form_data.json
+    networks: [default, shared-proxy]
+
+networks:
+  shared-proxy:
+    external: true

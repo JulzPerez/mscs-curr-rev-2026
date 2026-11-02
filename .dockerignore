@@ -1,0 +1,8 @@
+.git
+venv/
+__pycache__/
+*.pyc
+output/
+.claude/
+.vscode/
+form_data.json
