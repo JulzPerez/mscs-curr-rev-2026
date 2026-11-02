@@ -1,0 +1,1428 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{anysize}
+\usepackage{mathpazo}
+\usepackage{graphicx}
+\usepackage{multirow, bigstrut,amssymb}
+\usepackage{pdflscape}
+\usepackage{verbatim}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{ulem}
+\usepackage[toc,title,titletoc,header]{appendix}
+\usepackage{geometry}
+\usepackage{titling}
+
+\pagestyle{plain}
+
+%\parskip 7.2pt
+%\parindent 0pt
+%\marginsize{1.25in}{1.25in}{.5in}{.5in}
+
+\parskip 7.2pt
+\parindent 0pt
+
+\geometry{papersize={8.5in,13in}, left=1in, right=1in,top=1.25in, bottom=1.25in}
+
+\usepackage{lineno}
+%\linenumbers
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\newenvironment{myitemize}
+{
+ \begin{list}{{$\bullet$}}{
+  \setlength{\partopsep}{0pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+  \setlength{\topsep}{0pt}
+  \setlength{\itemsep}{0pt}
+  \setlength{\labelsep}{0.1cm} % horizontal space from bullet to text (as needed)
+  \setlength{\itemindent}{.03cm} % summary indentation: par 1.25cm + bullet 0.63 + magic number picked empirically (0.25cm)
+  \setlength{\leftmargin}{0.3cm} % reset margin so that only first line of list item indented
+  }             }
+{ \end{list}    }
+
+\renewcommand{\appendixname}{Annex}
+\renewcommand{\appendixtocname}{Annexes}
+\renewcommand{\appendixpagename}{Annexes}
+
+
+\title{{\bf \VAR{program_full_name}\\ (\VAR{program_abbr})}\\{\large \VAR{proposal_subtitle}}%\\{\small BOR Resolution No. xxx, Series of xxxx}
+}
+\author{
+\VAR{department}\\
+\VAR{college}\\
+\VAR{university}\\
+}
+\date{\today}
+%\date{}
+
+\renewcommand{\arraystretch}{1.5}
+
+\makeatletter
+
+\newlength\tdima
+\newcommand\tabfill[1]{%
+      \setlength\tdima{\linewidth}%
+      \addtolength\tdima{\@totalleftmargin}%
+      \addtolength\tdima{-\dimen\@curtab}%
+      \parbox[t]{\tdima}{#1\ifhmode\strut\fi}}
+
+%\newcommand\mytabs{\hspace*{1cm}\=\hspace{1cm}\=\hspace{2cm}}
+\newcommand\mytabs{\hspace*{2.85cm}\= }
+\newenvironment{mysec}[1][\mytabs]
+  {\begin{tabbing}#1\kill\ignorespaces}
+  {\end{tabbing}}
+
+\makeatother
+
+\newcommand\fns{\footnotesize}
+
+\newcommand{\mf}{\fontfamily{cmss}\selectfont}
+
+\newcommand{\ms}[1]{\texttt{\large #1}}
+
+\newcolumntype{M}{>{\bf\ttfamily}p{0.6in}}
+\newcolumntype{T}{>{\raggedright\arraybackslash}p{2.25in}}
+
+
+\raggedright
+\begin{document}
+
+%
+% start of c. s. letterhead
+%
+%\begin{tabular}{p{2.6in}p{.7in}p{2.2in}}
+%{Department of}\newline
+%{\LARGE\bf Computer Science}\newline
+%{\footnotesize College of Computer Studies}
+%\newline
+%{\tt\scriptsize scs.cs@msuiit.edu.ph}
+%&
+%\multirow{2}{*}{\includegraphics[scale=.10]{iitlogo.jpg}} & 
+%{\footnotesize Mindanao State University}\newline 
+%{\bf Iligan Institute of Technology}\newline
+%{\scriptsize 9200 Tibanga, Iligan City}
+%\end{tabular}
+%\vspace{3mm}
+%\hrule
+%
+% end of c. s. letterhead
+%
+
+\begin{titlingpage}
+\maketitle
+\end{titlingpage}
+
+%\vspace{1cm}
+%\begin{center}
+%{\Large\bf Curriculum Revision for MSCS Program}\\
+%{\today}
+%\end{center}
+
+%\begin{quotation}
+%Curriculum revision of the Master of Science in Computer Science (MSCS) pursuant to CHED Memorandum 46, Series of 2012, otherwise known as \emph{Policy Standard To Enhance Quality Assurance (QA) in the Philippines Higher Education Through an Outcomes-Based and Typology-Based QA}.
+%\end{quotation}
+
+
+%\begin{comment}
+
+\newpage
+\pagestyle{empty}
+%{\small
+\begin{center}
+{\bf\mf OVPAA Curriculum Evaluation Checklist of Documents for Curriculum Review}\\
+{\mf (Major Revisions)}
+\end{center}
+%}
+
+{\small
+\begin{tabbing}
+Proponent: \hspace{1in} \= {\bf \VAR{proponent}}\\
+College : \> {\bf \VAR{college}} \\
+%          \> {\bf College of Information Technology, MSU - Marawi} \\
+\\
+Date Proposal Received : \> \underline{\hspace{2in}}\\
+Program Proposed for Revision:\\
+\> {\bf \VAR{program_full_name}}\\
+Campus Offering Similar Program:\\
+\> {\bf \VAR{campus_offering}} 
+\end{tabbing}
+}
+
+{\small
+\begin{longtable}{|l>{\raggedright\arraybackslash}p{3.2in}|c|c|c|p{1.5in}|}
+\hline
+   & {\bf Documents} & {\bf Page} & {\bf Yes} & {\bf No} & {\bf Remarks}\\ 
+\hline
+{\bf 1} & {\bf Administrative Papers} &    &    &    &  \\
+\hline
+{\mf 1.1} & {\mf Letter from the Chancellor or his counterpart requesting the approval} &  &  &  &\\
+\hline
+{\mf 1.2} & {\mf Date of Campus APC Approval} &  &  &  & \\
+\hline
+{\mf 1.3} & {\mf Resolution from the Campus Council recommending approval of the proposed revision duly certified by the campus council secretary and attested by the Chancellor or his counterpart}\newline
+{\bf (Form 2 - Campus Council Resolution)} &  &  &  & \\
+\hline
+{\mf 1.4} & {\mf Resolution of the University System Council recommending approval of the proposed revisions duly certified by the University/BOR Secretary and attested by the President} \newline
+{\bf (Form 3 - University Council Resolution)} &  &  &  & \\
+\hline 
+{\bf 2} & {\bf Approval sheet duly signed by the chairs and members of the various reviewing committees} &  &  &  &  \\
+\hline
+{\mf 2.1} & {\mf Department Curriculum Committee} &  & \checkmark &  &\\
+\hline
+{\mf 2.2} & {\mf College Curriculum Committee} &  &  &  &\\
+\hline
+{\mf 2.3} & {\mf Campus Offering Same Program} &  &  &  &\\
+\hline
+{\mf 2.4} & {\mf Campus Curriculum Committee} &  &  &  &\\
+\hline
+{\mf 2.5} & {\mf University System Curriculum Committee} &  &  &  &\\
+\hline 
+{\bf 3} & {\bf Nature of the program being revised} &  & \checkmark &  & \\
+\hline
+{\bf 4} & {\bf Rationale of revision, complete set of program learning outcomes including the proposed additional outcomes, other components of the curriculum, strategies and processes.} &  & \checkmark &  & \\
+\hline
+%{\mf 3.1} & {\mf Rationale (The proposed revision must envision peace and development in Mindanao, toward research university and internalization, and other important rationale to improve the quality of graduate)} &  &  &  & \\
+%\hline
+%{\mf 3.2} & {\mf Objectives of the Program (Competencies to be developed in the graduates)} &  & \checkmark  &  & \\
+%\hline
+%{\mf 3.3} & {\mf Strategies and processes pursued in the revision} &  & \checkmark  &  & \\
+%\hline
+{\bf 5} & {\bf The Curriculum, Its Semestral Distributions with Prerequisites, Requisites or No Prerequisites} &  & \checkmark &  & \\
+\hline
+{\bf 6} & {\bf The Curriculum Map of the Program} &  & \checkmark &  & \\
+\hline
+{\bf 7} & {\bf Summary of Courses and Units} &  & \checkmark &  & \\
+\hline
+{\bf 8} & {\bf Comparative Summary of the Current and Proposed Revised Curricula} &  & \checkmark &  & \\
+\hline
+{\bf 9} & {\bf Comparative Summary of MSU Proposed Program and that of CHED (new for programs with CHED PSG)} &  & \checkmark &  & \\
+\hline
+{\bf 10} & {\bf Course Descriptions of All Courses Included in the Program} &  & \checkmark &  & \\
+\hline
+{\bf 11} & {\bf The Performance Indicators For Each of the Program Outcomes} &  & \checkmark &  & \\
+\hline
+{\bf 12} & {\bf The Proposed Measurement System Attainment of Each Indicators} &  & \checkmark &  & \\
+\hline
+{\bf 13} & {\bf The Preparation of the OBE Syllabi as Proposed by CHED (Compliance on CMO 46)} &  & \checkmark &  & \\
+\hline
+{\bf 14} & {\bf System of Program Assessment and Evaluation} &  & \checkmark &  & \\
+\hline
+{\bf 15} & {\bf System of Program Continous Quality Improvement} &  & \checkmark &  & \\
+\hline
+{\bf 16} & {\bf End-User Survey (Template available in the manual)} &  &  &  & \\
+\hline
+{\bf 17} & {\bf Eligibility Justification (COD/COE or AACCUP L3 or International Accreditation)} &  & \checkmark &  & \\
+\hline
+{\bf 18} & {\bf List of School Administrators and Needed Qualifications and Requirements and Functions} &  & \checkmark &  &\\
+\hline
+{\bf 19} & {\bf List of Academic and Non-Teachiing Personnel} & & \checkmark & & \\
+\hline
+{\bf 20} & {\bf Faculty Profile/ Requirements (Profile and publications)} & & \checkmark & & \\
+\hline
+{\bf 21} & {\bf Student Enrolment (Other Components)} & & \checkmark & & \\
+\hline
+{\bf 22} & {\bf Library Holdings Reflecting Copies of Books Per Titles} & & & & \\
+\hline
+{\bf 23} & {\bf Resources For Research Works Including Electronic Databases of Research Works} & &  & & \\
+\hline
+{\bf 24} & {\bf List of Facilities/Equipment} &  & \checkmark &  &\\
+\hline
+{\bf 25} & {\bf Linkages with Industries} &  &  &  &\\
+\hline
+{\bf 26} & {\bf Extension Program} &  & \checkmark &  &\\
+\hline
+{\bf 27} & {\bf List of Laboratory Facilities Equipment/ Furniture and Other Support Services} &  & \checkmark &  &\\
+\hline
+{\bf 28} & {\bf Support Services} &  & \checkmark &  &\\
+\hline
+{\bf 29} & {\bf Feasibility Studies (New Programs) (Template available in the manual)} &  &  &  &\\
+\hline
+{\bf 30} & {\bf The Complete Set of OBE Syllabi for This Program} &  & \checkmark  &  & \\
+\hline
+%{\bf 10} & {\bf Copy of a comprehensive study on what is to be continuously offered, what is to be phased out, and what is to offered in the future. Those programs to be revised should state proof that their graduates are still in demand and marketable preferably with statistics or data to support.} & & & & \\
+%\hline
+{\bf 31} & {\bf A budget plan showing how much the revision will cost the University. If no expense, then this has to be declared in proposal.} & & \checkmark & & \\
+\hline
+%{\bf 10} & {\bf Faculty Profile of the Department (Form 10)} &  &  &  & \\
+%\hline
+%{\bf 11} & {\bf College Administrator (Form 11)} &  &  &  &\\
+%\hline
+%{\bf 12} & {\bf Academic Non-Teaching Personnel (Form 12)} &  &  &  & \\
+%\hline
+%{\bf 13} & {\bf Library Holdings (Form 13)} &  &  &  & \\
+%\hline
+
+%{\bf 15} & {\bf Feasibility Study (Form 15)} &  &  &  & \\
+%\hline
+%{\bf 12} & {\bf OBE Syllabi (Form 16)} &  &  &  & \\
+%\hline
+{\bf 32} & {\bf A Certification from the Dean that the proposal is properly edited.} &  &  &  & \\
+\hline
+{\bf 33} & {\bf Copy of the recent national standards and policies/directives used by the college as guide or basis in the revision.} &  & \checkmark &  &\\
+\hline
+{\bf 34} & {\bf A usb flash drive of the entire proposal already corrected and edited.} &  &  &  & \\
+\hline
+\end{longtable}
+}
+
+%\vspace{.5cm}
+
+\begin{tabbing}
+Checked and Evaluated by: \hspace{4cm}\= \underline{\hspace{3in}}\\
+\\
+Telephone  number in case of inquiry/clarification: \> \underline{\hspace{3in}}\\
+\\
+Date of Evaluation: \> \underline{\hspace{3in}}
+\end{tabbing}
+
+%\end{comment}
+
+
+\newpage
+
+\tableofcontents
+
+\newpage
+\pagestyle{plain}
+
+\section{Features of the Revision}
+
+\VAR{features_intro}
+
+\begin{enumerate}
+\item \VAR{feature_1}
+\item \VAR{feature_2}
+\item \VAR{feature_3}
+\item \VAR{feature_4}
+\item \VAR{feature_5}
+\item \VAR{feature_6}
+\item \VAR{feature_7}
+\item \VAR{feature_8}
+\item \VAR{feature_9}
+\end{enumerate}
+
+\newpage
+\thispagestyle{empty}
+\section{Approval Sheets}
+
+\subsection*{Department Curriculum Committee}
+
+\vspace{2cm}
+\begin{center}
+\begin{tabular}{cp{.5in}c}
+
+{\bf \VAR{dept_member_1}} & & {\bf \VAR{dept_member_2}} \\
+Member             & & Member                 \\
+\\
+\\
+{\bf \VAR{dept_member_3}} & & {\bf \VAR{dept_member_4}} \\
+Member             & & Member                 \\
+\\
+\\
+{\bf \VAR{dept_member_5}} & & {\bf \VAR{dept_member_6}} \\
+Member             & & Member                 \\
+\end{tabular}
+\end{center}
+
+\vspace{1.5cm}
+\begin{center}
+\textbf{\VAR{dept_chair}} \\
+%\vspace{.25cm}
+Committee Chairperson
+\end{center}
+
+\newpage
+\thispagestyle{empty}
+\subsection*{College Curriculum Committee}
+
+%\begin{comment}
+\vspace{2cm}
+\begin{center}
+{\bf \VAR{college_dean}}\\
+\VAR{college_dean_role}\\[2cm]
+
+{\bf \VAR{college_asst_dean}}\\
+Assitant Dean
+\end{center}
+\vspace{.5cm}
+\begin{center}
+\begin{tabular}{cp{1.5in}c}
+{\bf \VAR{college_member_1}} & & {\bf \VAR{college_member_2}} \\
+Member   & & Member\\
+\\
+\\
+{\bf \VAR{college_member_3}} & & {\bf \VAR{college_member_4}} \\
+Member & & Member\\
+\\
+\\
+{\bf \VAR{college_member_5}} & & {\bf \VAR{college_member_6}} \\
+Member & & Member\\
+\end{tabular}
+\end{center}
+\vspace{1cm}
+\begin{center}
+{\bf \VAR{college_chair}}\\
+Committee Chairperson
+\end{center}
+%\end{comment}
+
+\newpage
+\thispagestyle{empty}
+\subsection*{Campus Curriculum Committee}
+
+%(To be determined when the new AO will be issued)
+\vspace{2cm}
+\begin{tabular}{cp{1.25in}c}
+{\bf \VAR{campus_member_1}} & & {\bf \VAR{campus_member_2}} \\
+\VAR{campus_member_1_role}                &  & \VAR{campus_member_2_role}                \\
+\\
+\\
+{\bf \VAR{campus_member_3}} & & {\bf \VAR{campus_member_4}} \\
+\VAR{campus_member_3_role}             & & \VAR{campus_member_4_role}         \\
+\\
+\\
+{\bf \VAR{campus_member_5}} & & {\bf \VAR{campus_member_6}} \\
+\VAR{campus_member_5_role}       & & \VAR{campus_member_6_role} \\
+
+\begin{comment}
+\\
+\\
+{\bf Prof. Khandy Lorraine G. Apsay} & & {\bf Prof. Bernie A. Casera} \\
+Member (CON)            & & Member (CON)                 \\
+\\
+\\
+{\bf Dr. Lunesa C. Pinzon} & & {\bf Dr. Jocelyn P. Vilela} \\
+Member (CSM)            & & Member (CSM)                \\
+\\
+\\
+{\bf Renato V. Crisostomo} & & {\bf Prof. Manuel C. Cabido} \\
+Member (SCS)             & & Member (SCS)                \\
+\\
+\\
+%{\bf Esmar N. Sedurifa} & & {\bf Giselle O. Dangdang} \\
+%Member             & & Member                 \\
+%\\
+%\\
+%\\
+{\bf Prof. Esmar N. Sedurifa} & & {\bf Dr. Josefina R. Tabudlong} \\
+Registrar         & & Vice Chairperson       \\
+\\end{comment}
+
+\end{tabular}
+
+\vspace{1cm}
+\begin{center}
+{\bf \VAR{campus_chair}}\\
+Committee Chairperson
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+{\bf \VAR{chancellor}}\\
+Chancellor
+\end{center}
+
+\newpage
+\thispagestyle{empty}
+\subsection*{Campus Council Resolution}
+
+(To be provided by the Secretary to the Campus Council)
+
+\newpage
+\thispagestyle{empty}
+\subsection*{University Curriculum Committee}
+
+(To be provided when the new order for its composition is issued)
+\begin{comment}
+%\vspace{1cm}
+\begin{tabular}{cp{1.25in}c}
+{\bf Dr. Cynthia M. Filipinas} & & {\bf Dr. Grace I. Prado} \\
+Main Campus                    & & MSU - Naawan             \\
+\\
+{\bf Dr. Samuel E. Anonas} & & {\bf Dr. Elnor C. Roa}       \\
+Main Campus                & & MSU - Naawan                 \\
+\\
+{\bf Dr. Minombao Ramos-Mayo} & & {\bf Dr. Gaudencio C. Petalcorin} \\
+Main Campus                   & & MSU - IIT                         \\
+\\
+{\bf Dr. Minerva-Saminah M. Naga} & & {\bf Dr. Esmar N. Sedurifa} \\
+Main Campus                       & & MSU - IIT                   \\
+\\
+{\bf Prof. Corazon S. Olpoc} & & {\bf Dr. Hilton J. Aguja} \\
+Main Campus                  & & MSU - IIT                 \\
+\\
+{\bf Dr. Acram Latip} & & {\bf Dr. Nelia G. Balgoa} \\
+Main Campus             & & MSU - IIT                 \\
+\\
+{\bf Prof. Hashmin M. Abdulhalim} & & {\bf Dr. Mary Lynn S. Abiera} \\
+Main Campus                       & & MSU - Gensan                 \\
+\\
+{\bf Dr. Glenn A. Lorenzo} & & {\bf Dr. Tomanda D. Antok}  \\
+Main Campus                & & MSU - Maguindanao           \\
+\\
+{\bf Dr. Cesar dela Se\~{n}a} & & {\bf Dr. Nagder J. Abdulrahman} \\
+Main Campus                       & & MSU - Sulu                 \\
+\\
+{\bf Prof. Henry C. Daut}  & & {\bf Dr. Anabel A. Wellms}  \\
+Main Campus                & & MSU - TCTO                  \\
+\\
+{\bf Dr. Rose Villa B. Estoista}  & & {\bf Prof. Carmelita H. Balbosa}  \\
+Main Campus                       & & MSU - Buug                        \\
+\\
+{\bf Dr. Renato S. Pacaldo}  & &   \\
+Main Campus                  & &  \\
+\end{tabular}
+
+\vspace{0.8cm}
+\begin{center}
+{\bf Dr. Alma E. Berowa}\\
+Vice President for Academic Affairs\\
+Chairperson
+\end{center}
+
+\end{comment}
+
+\newpage
+\thispagestyle{empty}
+\begin{tabbing}
+Date of Approval by the APC \hspace{1in}\= : \BLOCK{if date_apc}{\bf \VAR{date_apc}}\BLOCK{else}{\underline{\hspace{3in}}}\BLOCK{endif}\\
+\\
+Date of Approval by the Campus Council \> : \BLOCK{if date_campus_council}{\bf \VAR{date_campus_council}}\BLOCK{else}{\underline{\hspace{3in}}}\BLOCK{endif}\\
+\\
+Date of Approval by the University Council \> : \BLOCK{if date_university_council}{\bf \VAR{date_university_council}}\BLOCK{else}{\underline{\hspace{3in}}}\BLOCK{endif}\\
+\\
+Date of Approval by the Board of Regents \> : \BLOCK{if date_bor}{\bf \VAR{date_bor}}\BLOCK{else}{\underline{\hspace{3in}}}\BLOCK{endif}\\
+\\
+Date of Implementation \> : \BLOCK{if date_implementation}{\bf \VAR{date_implementation}}\BLOCK{else}{\underline{\hspace{3in}}}\BLOCK{endif}\\
+\end{tabbing}
+
+\newpage
+\thispagestyle{empty}
+\subsection*{BOR Resolution}
+
+(To be provided by the Secretary to the BOR)
+
+\newpage
+
+\section{Rationale}
+
+\VAR{rationale}
+
+
+\newpage
+\section{Program Objectives}
+
+\VAR{prog_obj_intro}
+
+
+\subsection{Graduate Outcomes Specific for MSCS}
+
+The program must enable the graduate students, by the time of graduation, to attain the following :
+\begin{enumerate}
+
+\item {\bf \VAR{plo1_title}} (PLO 1)\\
+\VAR{plo1_desc}
+
+\item {\bf \VAR{plo2_title}} (PLO 2)\\
+\VAR{plo2_desc}
+
+\item {\bf \VAR{plo3_title}} (PLO 3)\\
+\VAR{plo3_desc}
+
+\item {\bf \VAR{plo4_title}} (PLO 4)\\
+\VAR{plo4_desc}
+
+
+
+
+\end{enumerate}
+
+\subsection{Graduate Outcome Common to Computer Studies}
+\VAR{common_outcome_intro}
+
+\begin{quote}
+\textit{\VAR{common_outcome_quote}}
+\end{quote}
+
+The achievement of this attribute is supported, in various ways, by the following graduate outcomes specific to the MSCS program, namely:
+\begin{enumerate}
+\item Analytical and Critical Thinking (PLO 1)
+\item Scholarship and Research (PLO 2)
+\item Collaboration and Communication (PLO 3)
+\item Professionalism and Ethics (PLO 4)
+\end{enumerate}
+
+\subsection{National Standards for Graduate Students}
+
+The Philippine Qualifications Framework (PQF) Level 7 descriptors requires from the graduates of the master's degree programs with the following capacabilities:
+\begin{enumerate}
+\item \textbf{Knowledge, Skills, and Values}
+
+Demonstrated advanced knowledge and skills in a specialized or multi-disciplinary field of study for professional practice, self-directed research and/or lifelong learning.
+\item \textbf{Application}
+
+Applied in professional/creative work or research that requires self-direction and/or leadership in a specialized or multi-disciplinary professional work/research.
+\item \textbf{Degree of Independence}
+
+High substantial degree of independence that involves exercise of leadership and initiative individual work or in teams of multi-disciplinary field.
+\end{enumerate}
+
+The graduate outcomes of MSCS support the achievement of these PQF Level 7 descriptors as shown in the table below. The check mark (\checkmark) indicates the correlation or equivalence of student outcomes and the descriptors.
+
+%{\small
+\begin{center}
+\begin{tabular}{L{2in}C{1.2in}C{1.2in}C{1.2in}}
+
+%\begin{tabular}{p{1in}ccccc}
+\hline
+\multirow{2}{2in}
+{\bf Program Learning Outcomes (PLO)} & \multicolumn{3}{c}{\bf PQF Level 7}\\
+\cline{2-4}
+              & {\small Knowledge, Skills, and Values} & {\small Application} & {\small Degree of Independence} \\
+\hline
+\textbf{PLO 1}. {Analytical and Critical Thinking} & \checkmark & & \\
+\textbf{PLO 2}. {Scholarship and Research} &  & \checkmark & \checkmark \\
+\textbf{PLO 3}. {Collaboration and Communication} & \checkmark & \checkmark & \\
+\textbf{PLO 4}. {Professionalism and Ethics} & \checkmark & \checkmark & \checkmark \\
+\hline
+\end{tabular}
+\end{center}
+%}
+
+\subsection{Program Educational Objectives (PEOs)}
+\VAR{peo_intro}
+\begin{enumerate}
+\item (PEO 1). \VAR{peo_1}
+\item (PEO 2). \VAR{peo_2}
+\item (PEO 3). \VAR{peo_3}
+\item (PEO 4). \VAR{peo_4}
+\end{enumerate}
+
+The graduate outcome specific to MSCS are aligned to support the achievement of the Program Educational Objectives (PEOs) as shown in the table below. The check mark (\checkmark) indicates the correlation or equivalence of Student Outcomes and the PEOs.
+%{\small
+\begin{center}
+\begin{tabular}{L{3in}C{0.5in}C{0.5in}C{0.5in}C{0.5in}}
+
+%\begin{tabular}{p{1in}ccccc}
+\hline
+\multirow{2}{2in}
+{\bf Program Learning Outcomes (PLO)} & \multicolumn{4}{c}{\bf Program Educational Objectives (PEO)}\\
+\cline{2-5}
+              & PEO 1 & PEO 2 & PEO 3 & PEO 4\\
+\hline
+\textbf{PLO 1}. {Analytical and Critical Thinking} & \checkmark & & & \\
+\textbf{PLO 2}. {Scholarship and Research} &  & \checkmark & & \\
+\textbf{PLO 3}. {Collaboration and Communication} &  &  &  & \checkmark \\
+\textbf{PLO 4}. {Professionalism and Ethics} & \checkmark & \checkmark &  & \\
+\hline
+\end{tabular}
+\end{center}
+%}
+
+\subsection{Eligibility to Offer Graduate Programs}
+
+\VAR{eligibility_text}
+
+
+\section{Performance Indicators and Measurement System}
+
+%Assessment of the program is based on the evidences or outputs from the selected courses that supports for the achievement of its outcomes.  The learning outcomes of each course are aligned constructively to support the achievement of the students outcomes (SOs). The Curriculum Map provides the relationships of the courses and the Student Outcomes.
+
+\begin{enumerate}
+\item {\bf Analytical and Critical Thinking}
+ 
+\textit{Ability to think critically, creatively and solve complex problems in the field of computing.}
+
+%{\small
+\begin{tabular}{L{3.5in}L{2in}}
+\hline
+{\bf Performance Indicators} & {\bf Assessment} \\
+\hline
+Students will demonstrate the knowledge-based outputs and perform the skills-based outputs necessary for critical thinking and creativity & Course-embedded assessments\\
+Students will perform the disposition or deployment-based outputs necessary to solve the computing problems & Course-embedded assessments but not limited to reports, papers, or documentation of the problem's solution \\
+%Critically analyze ideas and data presented and discussed by others and participate in the peer review process & \\%Seminar Series\\
+%%\hline
+%Gain critical thinking and problem solving skills & \\%Coursework\\
+%%\hline
+%Prepare a thesis that demonstrates critical thinking and creativity & \\%MS Thesis \\
+%%\hline
+%Defend the thesis before the Advisory Committee & \\%MS Final Oral Exam \\
+\hline
+\end{tabular}
+%}
+
+\item {\bf Scholarship and Research}
+
+\textit{Ability to conduct original research, scholarship or creative endeavors using the advanced knowledge of the emerging computing technologies.}
+
+%{\small
+\begin{tabular}{L{3.5in}L{2in}}
+\hline
+{\bf Performance Indicators} & {\bf Assessment} \\
+\hline
+Students will demonstrate the knowledge-based outputs and perform the skills-based outputs showing the required knowledge necessary to conduct research or creative endeavors & Course-embedded assessments\\
+Students will perform the disposition or deployment-based outputs necessary to produce original researches or projects using appropriate computing tools & Course-embedded assessments but not limited to reports, papers, documentation, or manuscript of the study\\
+%Gain knowledge needed for conducting original research & \\%Plan of Study Coursework\\
+%%\hline
+%Prepare a thesis that meets expectations for original, independent research & \\%MS Thesis \\
+%%\hline
+%Achieve a satisfactory performance in the conduct of Thesis project)  & \\%Research Credits\\
+\hline
+\end{tabular}
+%}
+
+\item {\bf Collaboration and Communication}
+
+\textit{Ability to effectively work with others and communicate in the field of computing, through scholarly writing and presentations to various audiences.}
+
+%{\small
+\begin{tabular}{L{3.5in}L{2in}}
+\hline
+{\bf Performance Indicators} & {\bf Assessment} \\
+\hline
+Students will demonstrate collaboration-based and/or communication-based outputs necessary to conduct researches or projects working either independently or with the group and communication effectively various audiences in both writing and oral means & Course-embedded assessments that will show the fullfilment one's roles and responsibilities in any computing endeavor, and effectiveness in the organization of the report presentation or a document  \\
+%Gain experience in written and oral presentation of technical subjects through course assignments & \\%Plan of Study Coursework\\
+%\hline
+%Present the thesis in a public seminar (as required) and defend the thesis & \\%MS Final Oral Exam \\
+\hline
+\end{tabular}
+%}
+
+\begin{comment}
+
+\item {\bf Ethical Conduct}
+
+\textit{Ability to evaluate social and environmental issues in computing endeavors and make decisions in an ethical and responsible manner.}
+
+{\small
+\begin{tabular}{L{3.5in}L{2in}}
+\hline
+{\bf Performance Indicators} & {\bf Assessment} \\
+\hline
+Attend workshops or take online training on the responsible conduct of research & \\%Seminar Series\\
+%\hline
+Earn a satisfactory grade in at least 6 units of ICT 299 & \\%Research Credits\\
+%\hline
+Prepare a thesis based on ethical and responsible research & \\%MS Thesis \\
+\hline
+\end{tabular}
+}
+
+\end{comment}
+
+\item {\bf Professionalism and Ethics}
+
+%\textit{Ability to engage in continuing professional development and demonstrate attributes of a computing professional consistent with the expectations in the discipline.}
+%\textit{Ability to engage in continuing professional development and demonstrate attributes of a computing professional consistent with the expectations in the discipline.}
+\textit{Ability to evaluate social and environmental issues in computing endeavors and make decisions in accordance to an ethical and responsible professional practices.}
+
+%{\small
+\begin{tabular}{L{3.5in}L{2in}}
+\hline
+{\bf Performance Indicators} & {\bf Assessment} \\
+\hline
+Students will demonstrate professional outputs, show continuing development results and ethical manifestations in the conduct of any computing endeavor & Course-embedded assessments but not limited to projects, papers, and presentations with consideration to impact of the endeavor to society and environment\\
+%Gain appreciation for membership in professional societies & \\%Seminar Series\\
+%%\hline
+%Attend professional meetings & Seminar Series\\
+%Understand the importance of membership in professional societies & \\%Seminar Series\\
+
+%Present the thesis in a public seminar and defend the body of work before the student's Thesis Committee & \\%MS Final Oral Exam \\
+\hline
+\end{tabular}
+%}
+
+\end{enumerate}
+
+\section{System of Program Assessment and Evaluation}
+
+\VAR{assessment_text}
+
+\section{System of Continuous Quality Improvement}
+
+\VAR{cqi_text}
+
+
+\newpage
+\section{Other Components}
+
+\subsection{Admission Requirements}
+
+The admission requirements shall apply as prescribed in the Graduate Studies Philosophical Framework, and other latest policies or guidelines.
+
+In addition to this, the Department of Computer Science shall also impose entry requirements for the following situations:
+\begin{enumerate}
+\item The default source of input to the program are graduates of the computer or computing-related baccalaureate degree programs that provide substantial knowledge in the following areas:
+\begin{enumerate}
+\item Applicants must demonstrate proficiency in at least one (1) high-level programming language.
+\item Applicants must have a general knowledge in Computer Science equivalent to the following: Discrete Mathematics, Algorithm Design and Analysis, Operating Systems, Programming Languages, Database Systems, and Software Engineering.
+\end{enumerate}
+
+\item Applicants with unsatisfactory academic background may be conditionally admitted to the program subject to applicable existing rules or policies, and be required to take appropriate bridging courses over and above to what is required in MSCS program.
+\end{enumerate}
+
+\subsection{Transferees from Within and Other MSU Campuses}
+
+The admission of transferees shall apply as prescribed in the Graduate Studies Philosophical Framework, and other latest policies or guidelines.
+
+\subsection{Retention Policies}
+
+The retention policies shall apply as prescribed in the Graduate Studies Philosophical Framework, and other latest policies or guidelines.
+
+\subsection{Fees and Other Payments}
+
+The fees and other payments shall apply as prescribed in the Graduate Studies Philosophical Framework, and other latest policies or guidelines.
+
+\subsection{Strategies and Processes Involved in the Revision}
+
+The Department have undergone the following strategies and processes in coming up this revised MSCS program:
+\begin{enumerate}
+\item Examined the requirements for MSCS as prescribed in the CHED Memorandum Order (CMO) 7, series of 2010 entitled \textit{Revised Policies, Standards, and Guidelines for Graduate Program Information Technology Education (ITE)}
+\item Examined the requirements of a graduate program as prescribed in the CHED Memorandum Order (CMO) 15, series of 2019 entitled  \textit{Policies, Standards, and Guidelines for Graduate Programs}
+\item Inspected the Computer Science graduate curriculum of some popular higher education institutions local and abroad
+\item Integrated the quality assurance requirements for outcomes-based education as prescribed in the CHED Memorandum Order (CMO) 46, series of 2012 entitled \textit{Policy-Standard to Enhance Quality Assurance (QA) in Phillippine Higher Education Through an Outcomes-Based and Typology-Based QA} 
+\item Complied with the requirements of the MSU System for the revision of curriculum for both undergraduate and graduate programs
+\item Conducted a series of meetings and informal discussions with Faculty members for the needed reforms and new directions of the MSCS program
+\item Conducted a series of consultations and review with the representatives from the various departments of College of Computer Studies
+\end{enumerate}
+
+\subsection{Implementation Scheme}
+
+Some important information must be observed during the implementation of the program:
+
+\begin{enumerate}
+\item All courses are delivered through lecture sessions. The lecture sessions may require laboratory activities and students are allowed to use the open laboratory when necessary.
+\item Students are allowed to take appropriate graduate courses related their project or research undertakings with supervisor's consent.
+\item The thesis requirement of the program must be supervised by a Faculty of Computer Science
+\item Existing rules or policies of the Graduate School shall apply to any situation or scenario during implementation.
+\item The specialization courses required for each student shall be determined by the Program Advisor through its Program of Study.
+\item The comprehensive examination shall be given after the student have taken the 60\% of the total course requirements of the program and prior to taking the thesis course. The exam shall be preferrably held on the later part of the first semester of the second year.
+\end{enumerate}
+
+\subsection{Budget Plan}
+
+The revision of this program will not incur cost to this University. The only cost required is the regular maintenance of the classroom and laboratory facilities or equipment, including the office supplies needed in both classrooms and laboratories.
+
+\newpage
+\section{Distribution of Courses by Semester}
+
+\subsubsection*{First Year, First Semester}
+
+{\small
+\begin{tabular}{|p{.65in}|L{2in}|c|c|c|c|p{.65in}|p{.65in}|}
+\hline
+\multirow{2}{.65in}{\bf Course Code}
+          & \multirow{2}{*}{\bf Title}     & \multirow{2}{*}{\bf Units}
+                                                      &\multicolumn{3}{c|}{\bf Hours per Week}
+                                                                         & \multirow{2}{.65in}{\bf Pre-requisite}
+                                                                                         & \multirow{2}{.65in}{\bf Co-requisite}\\ 
+\cline{4-6}
+             &                                             &          & Lec & Lab & Total   &        &     \\
+\hline
+{\bf CSC201} & Advanced Data Structures and Algorithms     & 3        &  3  &  0  &  3      & None   & None\\
+\hline
+{\bf CSC202} & Computer Architecture and Operating Systems & 3        &  3  &  0  &  3      & None   & None\\
+\hline
+             & {\it Elective Course}                       & 3        &  3  &  0  &  3      & \multicolumn{2}{l|}{\it As the course requires}\\
+\hline
+\multicolumn{2}{r|}{Total}                           & {\bf 9}  & 9   &  0  & {\bf 9} & \multicolumn{2}{r}{}\\
+\cline{3-6}
+\end{tabular}
+}
+
+\subsubsection*{First Year, Second Semester}
+
+{\small
+\begin{tabular}{|p{.65in}|L{2in}|c|c|c|c|p{.65in}|p{.65in}|}
+\hline
+\multirow{2}{.65in}{\bf Course Code}
+          & \multirow{2}{*}{\bf Title}     & \multirow{2}{*}{\bf Units}
+                                                      &\multicolumn{3}{c|}{\bf Hours per Week}
+                                                                         & \multirow{2}{.65in}{\bf Pre-requisite}
+                                                                                         & \multirow{2}{.65in}{\bf Co-requisite}\\ 
+\cline{4-6}
+        &                                        &             & Lec & Lab & Total &     & \\
+\hline
+CSC203  & Programming Language Theory            & 3        &  3  &  0  &  3    & None   & None\\
+\hline
+CSC204  & Automata and Computation Theory        & 3        &  3  &  0  &  3    & None   & None\\
+\hline
+CCC298  & Methods of Research                    & 3        &  3  &  0  &  3    & None   & None\\
+\hline
+        & {\it Specialization Course}            & 3        &  3  &  0  &  3    & \multicolumn{2}{l|}{\it As the course requires}\\
+%        & (Specialization Course)                & 3        &  3  &  0  &  3    & None   & None\\
+\hline
+\multicolumn{2}{r|}{Total}                           & {\bf 12}  & 12   &  0  & {\bf 12} & \multicolumn{2}{r}{}\\
+\cline{3-6}
+\end{tabular}
+}
+
+\subsubsection*{Second Year, First Semester}
+
+{\small
+\begin{tabular}{|p{.65in}|L{2in}|c|c|c|c|p{.65in}|p{.65in}|}
+\hline
+\multirow{2}{.65in}{\bf Course Code}
+          & \multirow{2}{*}{\bf Title}     & \multirow{2}{*}{\bf Units}
+                                                      &\multicolumn{3}{c|}{\bf Hours per Week}
+                                                                         & \multirow{2}{.65in}{\bf Pre-requisite}
+                                                                                         & \multirow{2}{.65in}{\bf Co-requisite}\\ 
+\cline{4-6}
+          &                                              &             & Lec & Lab & Total &   & \\
+\hline
+CCC296 & ICT for Peace and Development                   & 1        &  1  &  0  &  1    & None   & None\\
+\hline
+CCC297 & Systematic Review and Research Seminar in ICT   & 3        &  3  &  0  &  3    & None   & None\\
+%CCC298 & Methods of Research                             & 3        &  3  &  0  &  3    & None   & None\\
+\hline
+        & {\it Specialization Course}                    & 3        &  3  &  0  &  3    & \multicolumn{2}{l|}{\it As the course requires}\\
+%       & (Specialization Course)                 & 3        &  3  &  0  &  3    & None   & None\\
+\hline
+\multicolumn{2}{r|}{Total}                           & {\bf 7}  & 7   &  0  & {\bf 7} & \multicolumn{2}{r}{}\\
+\cline{3-6}
+\end{tabular}
+}
+
+\subsubsection*{Second Year, Second Semester}
+
+{\small
+\begin{tabular}{|p{.65in}|L{2in}|c|c|c|c|p{.65in}|p{.65in}|}
+\hline
+\multirow{2}{.65in}{\bf Course Code}
+          & \multirow{2}{*}{\bf Title}     & \multirow{2}{*}{\bf Units}
+                                                      &\multicolumn{3}{c|}{\bf Hours per Week}
+                                                                         & \multirow{2}{.65in}{\bf Pre-requisite}
+                                                                                         & \multirow{2}{.65in}{\bf Co-requisite}\\ 
+\cline{4-6}
+       &                                         &             & Lec & Lab & Total &      & \\
+\hline
+CSC299 & Master's Thesis                         & 6        &  6  &  0  &  6    & CCC298   & None\\
+\hline
+\multicolumn{2}{r|}{Total}                           & {\bf 6}  & 6   &  0  & {\bf 6} & \multicolumn{2}{r}{}\\
+\cline{3-6}
+\end{tabular}
+}
+
+\subsection*{List of Specialization Courses}
+
+\subsubsection*{Systems Specialization Courses}
+
+{\small
+\begin{tabular}{p{.65in}L{2in}ccccp{.65in}p{.65in}}
+\hline
+\multirow{2}{.65in}{\bf Course Code}
+          & \multirow{2}{*}{\bf Title}     & \multirow{2}{*}{\bf Units}
+                                                      &\multicolumn{3}{c}{\bf Hours per Week}
+                                                                         & \multirow{2}{.65in}{\bf Pre-requisite}
+                                                                                         & \multirow{2}{.65in}{\bf Co-requisite}\\ 
+\cline{4-6}
+       &                                       &             & Lec & Lab & Total & \\
+\hline
+
+CSC210 & Computer Modeling and Simulation      & 3          & 3   &  0  &  3    & None & None \\
+CSC211 & Computational Linguistics             & 3          & 3   &  0  &  3    & None & None \\
+%CSC212 & Parallel Computing \\
+%CSC213 & Randomized Algorithms \\
+CSC214 & Programming Language Implementation   & 3          & 3   &  0  &  3    & None & None \\
+CSC215 & Computer Security                     & 3          & 3   &  0  &  3    & None & None \\
+%CSC216 & Computational Mathematics\\
+CSC217 & Computer Vision                       & 3          & 3   &  0  &  3    & None & None \\
+CSC218 & Machine Learning                      & 3          & 3   &  0  &  3    & None & None \\
+CSC219 & Social Computing                      & 3          & 3   &  0  &  3    & None & None \\
+CSC220 & Data Mining                           & 3          & 3   &  0  &  3    & None & None \\
+CSC221 & Survey of Programming Languages       & 3          & 3   &  0  &  3    & None & None \\
+%CSC222 & Biomedical Informatics\\
+%CSC223 & Computer Graphics \\
+CSC224 & Data Analytics and Visualization      & 3          & 3   &  0  &  3    & None & None \\
+CSC225 & Advanced Operating Systems            & 3          & 3   &  0  &  3    & None & None \\
+%CSC226 & Computer Security\\
+CSC227 & Advanced Computer Networks            & 3          & 3   &  0  &  3    & None & None \\
+CSC228 & Parallel and Distributed Systems      & 3          & 3   &  0  &  3    & None & None \\
+CSC229 & Advanced Software Engineering         & 3          & 3   &  0  &  3    & None & None \\
+%CSC230 & Methods of Software Development\\
+%CSC231 & Software Quality Assurance \\
+CSC232 & Web-based Software Engineering        & 3          & 3   &  0  &  3    & None & None \\
+CSC233 & Mobile Computing                      & 3          & 3   &  0  &  3    & None & None \\
+%CSC234 & Web Science\\
+%CSC235 & Computer Vision\\
+%CSC236 & Robotic Systems\\
+CSC295 & Special Topics in Computer Science    & 3          & 3   &  0  &  3    & None & None \\
+CSC298 & Special Project                       & 3          & 3   &  0  &  3    & None & None \\
+CSC299 & Master's Thesis                       & 3          & 3   &  0  &  3    & None & None \\
+CCC296 & ICT for Peace                         & 3          & 3   &  0  &  3    & None & None \\
+CCC297 & Research Seminar                      & 3          & 3   &  0  &  3    & None & None \\
+
+\hline
+\end{tabular}
+}
+
+\subsubsection*{Theory Specalization Courses}
+
+{\small
+\begin{tabular}{p{.65in}L{2in}ccccp{.65in}p{.65in}}
+\hline
+\multirow{2}{.65in}{\bf Course Code}
+          & \multirow{2}{*}{\bf Title}     & \multirow{2}{*}{\bf Units}
+                                                      &\multicolumn{3}{c}{\bf Hours per Week}
+                                                                         & \multirow{2}{.65in}{\bf Pre-requisite}
+                                                                                         & \multirow{2}{.65in}{\bf Co-requisite}\\ 
+\cline{4-6}
+          &                                   &             & Lec & Lab & Total & \\
+\hline
+
+CSC201 & Advanced Data Structures and Algorithms         & 3 3   &  0  &  3    & None & None \\
+CSC202 & Computer Architecture and Operating Systems     & 3 3   &  0  &  3    & None & None \\
+CSC203 & Programming Language Theory                     & 3 3   &  0  &  3    & None & None \\
+CSC204 & Automata and Computation Theory                 & 3 3   &  0  &  3    & None & None \\
+CSC205 & Complexity Theory                               & 3 3   &  0  &  3    & None & None \\
+%CSC206 & Combinatorial Optimization \\
+%CSC207 & Theory of Communications \\
+CSC208 & Cryptography                                    & 3 3   &  0  &  3    & None & None \\
+%CSC209 & Numerical Computing\\
+
+CSC290 & Database Theory                                 & 3 3   &  0  &  3    & None & None \\
+CSC291 & Advanced Topics in Computational Science        & 3 3   &  0  &  3    & None & None \\
+CSC292 & Advanced Topics in Theoretical Computer Science & 3 3   &  0  &  3    & None & None \\
+
+\hline
+\end{tabular}
+
+%\subsubsection*{Elective Specialization Courses}
+
+%Any graduate courses related to the research topic
+
+\newpage
+
+\section{Summary of Courses and Units}
+%\begin{center}
+%{\bf BACHELOR OF SCIENCE IN COMPUTER SCIENCE}
+%{\tiny Program}\\
+%\end{center}
+
+{\small
+\begin{longtable}{p{4.2in}rr}
+
+\hline
+\multirow{2}{4.2in}
+{\bf Particulars} & \multicolumn{2}{c}{\bf Units}\\
+\cline{2-3}
+                  & {\bf Present}       & {\bf Proposed}\\
+\hline
+\endfirsthead
+
+%\multicolumn{3}{c}%
+%{{\bfseries \tablename\ \thetable{} -- continued from previous page}} \\
+
+%\hline \multicolumn{1}{c}{\textbf{Particulars}} & \multicolumn{1}{c}{\textbf{Present Units}} & \multicolumn{1}{c}{\textbf{Proposed Units}} \\ \hline 
+%\hline
+%{\bf Particulars} & {\bf Present Units } & {\bf Proposed Units}\\
+%\hline
+\hline
+\multirow{2}{4.2in}
+{\bf Particulars} & \multicolumn{2}{c}{\bf Units}\\
+\cline{2-3}
+                  & {\bf Present}       & {\bf Proposed}\\
+\hline
+\endhead
+
+%\hline 
+\multicolumn{3}{r}{\it Continued on next page} \\ 
+%\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+{\bf A. Required Courses}  \\%                &   & {\bf 36}\\
+\hspace{.5cm}{\it 1. Core Course} \\ %\hrulefill \\
+\hline
+\hspace{1cm} ICT 201           & 3 & 0 \\
+\hline
+\hspace{1cm} ICT 202           & 3 & 0 \\
+\hline
+\hspace{1cm} ICT 203           & 3 & 0 \\
+\hline
+\hspace{1cm} ICT 204           & 3 & 0 \\
+\hline
+
+\multicolumn{1}{r}
+{\bf Subtotal}  & 12 & {\bf 0} \\ 
+\cline{2-3}
+
+\hspace{.5cm}{\it 5. New Core Courses (CMO 7, series of 2010)} \\ % \hrulefill \\
+\hline
+\hspace{1cm} {\bf CSC201}           & 0 & {\bf 3} \\
+\hline
+\hspace{1cm} {\bf CSC202}           & 0 & {\bf 3} \\
+\hline
+\hspace{1cm} {\bf CSC203}           & 0 & {\bf 3} \\
+\hline
+\hspace{1cm} {\bf CSC204}           & 0 & {\bf 3} \\
+\hline
+
+\multicolumn{1}{r}
+{\bf Subtotal}  & 0 & {\bf 12} \\ 
+%\hline
+\cline{2-3}
+\hspace{.5cm}{\it 6. Thesis Course} \\ % \hrulefill \\
+\hline
+\hspace{1cm} ICT 399                & 6 & 0 \\
+\hline
+\hspace{1cm} {\bf CSC299}           & 0 & {\bf 6} \\
+\hline
+%\cline{2-3}
+\multicolumn{1}{r}
+{\bf Subtotal}  & {\bf 6} & {\bf 6} \\ 
+%\hline
+\cline{2-3}
+\hspace{.5cm}{\it 7. Specialization Courses} \\ % \hrulefill \\
+\hline
+\hspace{1cm} Chosen Six (6) from ICT Courses           & 18 & 0 \\
+\hline
+\hspace{1cm} {\bf Chosen three (3) from Specialization Courses}           & 0 & {\bf 9} \\
+\hline
+
+\multicolumn{1}{r}
+{\bf Subtotal}  & 18 & {\bf 9} \\ 
+%\hline
+\cline{2-3}
+
+{\bf B. Required Common Courses}\\
+\hspace{.5cm}{\it 1. Peace and Development} \\ % \hrulefill \\
+\hline
+\hspace{1cm} {\bf CCC296}           & 0 & {\bf 1} \\
+\hline
+
+\multicolumn{1}{r}
+{\bf Subtotal}  & 0 & {\bf 1} \\ 
+%\hline
+\cline{2-3}
+
+\hspace{.5cm}{\it 2. Seminar} \\ % \hrulefill \\
+\hline
+\hspace{1cm} ICT 299                    & 1 & {\bf 0}\\
+\hline
+\hspace{1cm} {\bf CSC297}               & 0 & {\bf 3} \\
+
+\hline
+%\cline{2-3}
+\multicolumn{1}{r}
+{\bf Subtotal}  & 1 & {\bf 3} \\ 
+%\hline
+\cline{2-3}
+%\hspace{.5cm}8. Physical Education Courses \hrulefill \\
+%{\bf C. Physical Education Courses} \\
+\hspace{.5cm}{\it 3. Research Methods } \\ % \hrulefill \\
+\hline
+\hspace{1cm} {\bf CCC298}           & 0 & {\bf 3} \\
+\hline
+
+\multicolumn{1}{r}
+{\bf Subtotal}  & 0 & {\bf 3} \\ 
+%\hline
+\cline{2-3}
+
+
+\\
+%\hline
+%{\bf Work Experience} \\
+%\hspace{1cm} CSC 197            & 0 & 0 \\
+%\hspace{1cm} Summer Internship  & * & * \\
+%\hline
+%\multicolumn{1}{r}
+%{\bf Subtotal}  & {} & {} \\ 
+%\hline
+%\cline{2-3}
+\hline
+\multicolumn{1}{r}
+{\bf Grand Total:}  & 37 & {\bf 34} \\
+%\hline
+\end{longtable}
+}
+
+\newpage
+
+{\small
+\begin{longtable}{p{4.2in}rr}
+
+\hline
+\multirow{2}{4.2in}
+{\bf Particulars} & \multicolumn{2}{c}{\bf Units}\\
+\cline{2-3}
+                  & {\bf Present}       & {\bf Proposed}\\
+\hline
+\endfirsthead
+
+\hline
+\multirow{2}{4.2in}
+{\bf Particulars} & \multicolumn{2}{c}{\bf Units}\\
+\cline{2-3}
+                  & {\bf Present}       & {\bf Proposed}\\
+\hline
+\endhead
+
+%\hline \bf
+\multicolumn{3}{r}{\small\it Continued on next page} \\ 
+%\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+%\begin{tabular}{p{4.2in}p{.6in}p{.6in}}
+%\hline
+%{\bf Particulars} & {\bf Present Units} & {\bf Proposed Units}\\
+%\hline
+{\bf E. Units Per Semester} \\
+\hspace{.5cm}{\it First Year} \hrulefill \\
+\hspace{1cm} First Semester     & 9  & {\bf 9} \\ \cline{2-3}
+\hspace{1cm} Second Semester    & 12 & {\bf 12} \\ \cline{2-3}
+\hspace{.5cm}{\it Second Year} \hrulefill \\
+\hspace{1cm} First Semester     & 10  & {\bf 7} \\ \cline{2-3}
+\hspace{1cm} Second Semester    & 6   & {\bf 6} \\ \cline{2-3}
+%\hspace{.5cm}{\it Third Year} \hrulefill \\
+%\hspace{1cm} First Semester     & 21  & 19 \\
+%\hspace{1cm} Second Semester    & 21  & 19 \\
+%\hspace{.5cm}{\it Fourth Year} \hrulefill \\
+%\hspace{1cm} First Semester     & 20  & 15 \\
+%\hspace{1cm} Second Semester    & 18  & 12 \\
+%\hline
+%\cline{2-3}\\
+%\multicolumn{1}{r}
+%{\bf Subtotal}  & {} & {\bf 152} \\ 
+%\hline
+\\
+\hline
+\multicolumn{1}{r}
+{\bf Grand Total:}  & 37 & {\bf 34} \\
+
+%\hline
+%\end{tabular}
+\end{longtable}
+}
+
+
+\newpage
+
+\begin{landscape}
+
+\section{Comparative Summary of the Current and Proposed Revised Curriculum}
+
+{\footnotesize
+\begin{longtable}{p{.85in}>{\raggedright\arraybackslash}p{2.25in}ccp{.75in}>{\raggedright\arraybackslash}p{2.35in}c>{\raggedright\arraybackslash}p{2.5in}}
+
+\hline
+\multicolumn{3}{c}{\bf Current}        & &\multicolumn{3}{c}{\bf Proposed} & \multirow{2}{2in}{\bf Specific Changes Done\newline and its Justification}\\
+\cline{1-3} \cline{5-7}
+{\small\bf Course No} & {\small\bf Course Title} & {\small\bf Units} & & {\small\bf Course No} & {\small\bf Course Title} & {\small\bf Units} &  \\
+\hline
+\endfirsthead
+
+\hline
+\multicolumn{3}{c}{\bf Current}        & &\multicolumn{3}{c}{\bf Proposed} & \multirow{2}{2in}{\bf Specific Changes Done\newline and its Justification}\\
+\cline{1-3} \cline{5-7}
+{\small\bf Course No} & {\small\bf Course Title} & {\small\bf Units} & & {\small\bf Course No} & {\small\bf Course Title} & {\small\bf Units} &  \\
+\hline
+\endhead
+
+%\hline 
+\multicolumn{8}{r}{\it\small Continued on next page} \\ 
+%\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+
+             & Grand Total            & 37 & &  & {\bf Grand Total }            & {\bf 34}  &  \\
+\end{longtable}
+}
+
+\end{landscape}
+
+\subsection{Comparative Summary of CHED PSG and Proposed Program}
+
+{\small
+\begin{longtable}{p{2in}cc}
+
+\hline
+\multirow{2}{4.2in}
+{\bf Particulars} & \multicolumn{2}{c}{\bf Units}\\
+\cline{2-3}
+                  & {\bf CHED CMO 15}       & {\bf Proposed MSCS}\\
+\hline
+\endfirsthead
+
+
+\hline
+\multirow{2}{4.2in}
+{\bf Courses} & \multicolumn{2}{c}{\bf Units}\\
+\cline{2-3}
+                  & {\bf Present}       & {\bf Proposed}\\
+\hline
+\endhead
+
+%\hline \bf
+\multicolumn{3}{r}{\small\it Continued on next page} \\ 
+%\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+
+Coursework                & 24 & 28 \\
+%Mandated GE Course       & 0  & 3  \\
+Thesis Course             & 6  & 6 \\
+%Specialization Courses   & 0  & 9 \\
+%Additional Math Courses  & 3  & 17 \\
+%Electives                & 9  & 9  \\
+%Physical Education       & 8  & 8  \\
+%NSTP                     & 6  & 6  \\
+
+%\hline
+\cline{2-3}
+\multicolumn{1}{r}
+{\bf Subtotal}  & 30 & {\bf 34} \\ 
+\hline
+\multicolumn{1}{r}
+{\bf Grand Total}  & 30 & {\bf 34} \\ %\\
+%\hline
+%\end{tabular}
+\end{longtable}
+}
+
+\newpage
+
+
+
+\section{Course Description}
+
+\vspace{1cm}
+\BLOCK{for course in courses}
+\begin{mysec}
+{\bf \VAR{course.code}} \> {\bf \VAR{course.title}} \\[1.5ex]
+\> \tabfill{\raggedright \VAR{course.desc}} \\ [1.5ex]
+\> Credits: \hspace{1cm} \= : \VAR{course.credits} \\
+\> Prerequisite          \> : \VAR{course.prereq}
+\end{mysec}
+
+\BLOCK{endfor}
+
+
+\newpage
+
+\section{Summary of Courses and Units}
+(to be provided)
+
+%(The following sections will be transferred later under the Summary of Courses and Units section)
+%\subsection*{Requirements and Schedule}
+%The MSCS requires a total of 37 units and its courses are programmed within the two-year period. Details are presented in the following tables:
+
+\subsection*{Degree Requirements}
+\begin{center}
+\begin{tabular}{ll}
+\hline
+Core Courses (CSC201,CSC202, CSC203, CSC204) & 12 units \\
+%      & \\
+Specialization Courses              & 12 units \\
+CCC296 ICT for Peace                & 3 units \\
+CCC297 Research Seminar             & 1 unit \\
+CSC298 Special Project              & 3 units \\
+CSC299 Master's Thesis              & 6 units\\
+\hline
+{\bf Total}                         & {\bf 37 units}
+\end{tabular}
+\end{center}
+
+\newpage
+\section{Curriculum Map}
+
+The curriculum map is presented as a table with columns representing the student outcomes and
+the rows representing the courses organized by Knowledge Areas (KAs). The map indicates the
+extent to which the courses in the curriculum correspond to the student outcomes. The following
+are the descriptions used to correlate the outcomes and the courses:
+
+\begin{itemize}
+\item[\textbf{L}] \textbf{Learned} in the course
+\item[\textbf{P}] \textbf{Practiced} in the course with supervision
+\item[\textbf{D}] \textbf{Demonstrated} in the course without supervision
+\end{itemize}
+
+\begin{landscape}
+{\small
+\begin{longtable}{|L{.8in}|\VAR{outcome_col_spec}}
+\hline
+\multirow{2}{.8in}{\bf KA / Course} & \multicolumn{\VAR{n_outcomes}}{c|}{\bf Student Outcomes} \\
+\cline{2-\VAR{n_outcomes_plus_1}}
+\BLOCK{for o in outcomes} & {\bf \VAR{o.code}}\BLOCK{endfor} \\
+\hline
+\endfirsthead
+\hline
+\multirow{2}{.8in}{\bf KA / Course} & \multicolumn{\VAR{n_outcomes}}{c|}{\bf Student Outcomes (cont.)} \\
+\cline{2-\VAR{n_outcomes_plus_1}}
+\BLOCK{for o in outcomes} & {\bf \VAR{o.code}}\BLOCK{endfor} \\
+\hline
+\endhead
+\hline
+\endfoot
+\hline
+\endlastfoot
+\BLOCK{for grouper, ka_courses in courses | groupby('knowledge_area')}
+\multicolumn{\VAR{n_outcomes_plus_1}}{|l|}{\bf \VAR{grouper}} \\
+\hline
+\BLOCK{for course in ka_courses}\BLOCK{set pm = course.plo_map if course.plo_map else {}}
+{\bf \VAR{course.code}}\BLOCK{for o in outcomes} & \VAR{pm.get(o.code, '')}\BLOCK{endfor} \\
+\hline
+\BLOCK{endfor}
+\BLOCK{endfor}
+\end{longtable}
+}
+\end{landscape}
+
+\newpage
+\section{Certification from the Dean}
+
+
+\newpage
+
+%\begin{appendices}
+\appendix
+%\renewcommand{\thesection}{A}
+\section*{Appendices}
+\addcontentsline{toc}{section}{Appendices}
+\renewcommand{\thesubsection}{\Alph{subsection}}
+
+%\newpage
+
+\subsection{Curriculum Criteria, Standards, and Guidelines}
+
+%\begin{comment}
+
+\begin{enumerate}
+\item CHED Memorandum Order (CMO) No. 15, Series of 2019
+
+\textit{Policies, Standards, and Guidelines for Graduate Programs}
+
+\item CHED Memorandum Order (CMO) No. 07, Series of 2010
+
+\textit{Revised Policies, Standards, and Guidelines for Graduate Program Information Technology Education (ITE)}
+
+
+\end{enumerate}
+
+\newpage
+
+
+\newpage
+\subsection{Outcomes-Based Syllabuses}
+
+
+\newpage
+\subsection{System of Continuous Assessment and Quality Improvement}
+
+\end{document}
+

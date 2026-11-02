@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Syllabus Editor – {{ course.code }}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a}
+.hdr{background:#1e3a5f;color:white;padding:11px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.hdr-left{display:flex;align-items:center;gap:14px}
+.back-btn{color:rgba(255,255,255,.8);text-decoration:none;font-size:.82rem;display:flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid rgba(255,255,255,.3);border-radius:6px;transition:all .15s}
+.back-btn:hover{background:rgba(255,255,255,.1);color:white}
+.hdr-t{font-size:1rem;font-weight:700}
+.hdr-s{font-size:.73rem;opacity:.7;margin-top:2px}
+.hdr-a{display:flex;gap:8px;align-items:center}
+.si{font-size:.73rem;color:rgba(255,255,255,.55);margin-right:4px}
+.btn{padding:7px 15px;border:none;border-radius:6px;cursor:pointer;font-size:.84rem;font-weight:600;transition:all .15s}
+.btn:hover{opacity:.85;transform:translateY(-1px)}.btn:active{transform:none}
+.btn-save{background:#4a90d9;color:white}
+.btn-docx{background:#27ae60;color:white}
+.btn-pdf{background:#c0392b;color:white}
+.layout{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:212px;background:white;border-right:1px solid #e0e4ea;padding:10px 0;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto;flex-shrink:0}
+.nav-g{padding:9px 14px 2px;font-size:.63rem;text-transform:uppercase;letter-spacing:1px;color:#aaa;font-weight:700;margin-top:4px}
+.nav-i{display:block;padding:8px 18px;font-size:.83rem;color:#555;cursor:pointer;border-left:3px solid transparent;transition:all .12s}
+.nav-i:hover{background:#f5f7fa;color:#1e3a5f}.nav-i.active{border-left-color:#1e3a5f;color:#1e3a5f;background:#eef3fa;font-weight:700}
+.main{flex:1;padding:22px 26px;overflow-y:auto}
+.sec{display:none;max-width:920px}.sec.active{display:block}
+.sec-hdr{margin-bottom:18px;padding-bottom:11px;border-bottom:2px solid #1e3a5f}
+.sec-hdr h2{font-size:1.1rem;color:#1e3a5f;font-weight:700}
+.sec-hdr p{font-size:.78rem;color:#777;margin-top:3px}
+.card{background:white;border-radius:10px;padding:18px 20px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.card h3{font-size:.87rem;font-weight:700;color:#1e3a5f;margin-bottom:13px;padding-bottom:8px;border-bottom:1px solid #edf0f4}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.g1{display:grid;grid-template-columns:1fr;gap:13px}
+.span2{grid-column:span 2}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:.7rem;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field textarea,.field select{padding:8px 11px;border:1.5px solid #dde2ea;border-radius:6px;font-size:.875rem;color:#1a1a1a;background:#fafbfc;font-family:inherit;transition:border-color .15s}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#4a90d9;background:white;box-shadow:0 0 0 3px rgba(74,144,217,.1)}
+.field textarea{resize:vertical;min-height:72px;line-height:1.5}
+/* CLO list */
+.clo-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;background:#f8fafc;border:1px solid #e8edf4;border-radius:7px;padding:10px 12px}
+.clo-code-input{width:80px;flex-shrink:0;font-family:monospace;font-weight:700;font-size:.85rem;padding:7px 9px;border:1.5px solid #dde2ea;border-radius:5px;background:white}
+.clo-desc-input{flex:1;padding:7px 10px;border:1.5px solid #dde2ea;border-radius:5px;font-size:.85rem;font-family:inherit;resize:vertical;min-height:56px;background:white}
+.clo-code-input:focus,.clo-desc-input:focus{outline:none;border-color:#4a90d9}
+.btn-del{background:none;border:1px solid #e0444450;color:#c0392b;border-radius:5px;padding:4px 9px;font-size:.78rem;cursor:pointer;flex-shrink:0;margin-top:2px}
+.btn-del:hover{background:#fdf0f0}
+.btn-add-row{display:block;width:100%;padding:9px;border:2px dashed #b8cce4;border-radius:8px;background:none;color:#1e3a5f;font-size:.85rem;font-weight:600;cursor:pointer;margin-top:6px;transition:all .15s}
+.btn-add-row:hover{border-color:#1e3a5f;background:#eef3fa}
+/* CLO-PLO table */
+.cloplo-wrap{overflow-x:auto}
+.cloplo-tbl{border-collapse:collapse;font-size:.82rem;min-width:400px}
+.cloplo-tbl th{background:#1e3a5f;color:white;padding:8px 10px;text-align:center;font-size:.75rem;border:1px solid #15294a;white-space:nowrap}
+.cloplo-tbl th.th-plo{text-align:left;min-width:220px}
+.cloplo-tbl td{border:1px solid #d0d8e8;padding:7px 10px;text-align:center;vertical-align:middle}
+.cloplo-tbl td.td-plo{text-align:left;background:#f4f7fc;font-size:.8rem;color:#333;padding-left:12px}
+.cloplo-tbl tr:hover td.td-plo{background:#e6eef8}
+.ipd-cell{display:flex;justify-content:center;gap:2px;padding:3px 4px}
+.ipd-btn{width:22px;height:22px;border:1.5px solid #d0d8e8;border-radius:3px;background:#f5f7fa;color:#bbb;font-size:.72rem;font-weight:800;cursor:pointer;font-family:monospace;line-height:1;padding:0;transition:all .1s}
+.ipd-btn:hover{border-color:#4a90d9}
+.ipd-btn.on-I{background:#d4ecff;color:#1e5090;border-color:#6ab4f5}
+.ipd-btn.on-P{background:#4a90d9;color:white;border-color:#3070b0}
+.ipd-btn.on-D{background:#1e3a5f;color:white;border-color:#0d1f36}
+.sync-badge{display:inline-flex;gap:5px;flex-wrap:wrap;margin-top:12px}
+.sb-chip{font-size:.72rem;padding:3px 8px;border-radius:4px;font-weight:700;font-family:monospace}
+.sb-chip.on{background:#dbeeff;color:#1e5090;border:1px solid #b0d0ff}
+.sb-chip.off{background:#f0f2f5;color:#bbb;border:1px solid #e8ecf0}
+/* Learning plan table */
+.lp-wrap{overflow-x:auto}
+.lp-tbl{border-collapse:collapse;font-size:.8rem;width:100%}
+.lp-tbl th{background:#1e3a5f;color:white;padding:7px 8px;text-align:center;font-size:.72rem;border:1px solid #15294a;white-space:nowrap}
+.lp-tbl th.th-left{text-align:left}
+.lp-tbl td{border:1px solid #d0d8e8;padding:4px 5px;vertical-align:top}
+.lp-tbl input,.lp-tbl textarea,.lp-tbl select{width:100%;border:none;background:transparent;font-size:.8rem;font-family:inherit;padding:3px 5px;resize:vertical;min-height:32px}
+.lp-tbl input:focus,.lp-tbl textarea:focus{outline:1px solid #4a90d9;background:#f0f6ff;border-radius:3px}
+.lp-tbl .td-week{width:48px;text-align:center}
+.lp-tbl .td-co{width:76px;text-align:center;padding:3px 2px}
+.lp-tbl .td-co .ipd-cell{justify-content:center;padding:2px 0}
+.lp-tbl .td-del{width:30px;text-align:center}
+.lp-tbl .td-del button{background:none;border:none;color:#c0392b;cursor:pointer;font-size:.9rem;padding:2px}
+/* Assessment blueprint */
+.ab-row{background:white;border:1px solid #e0e6f0;border-radius:8px;padding:14px;margin-bottom:10px}
+.ab-row .g2{margin-top:8px}
+.ab-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ab-label{font-size:.78rem;font-weight:700;color:#1e3a5f;font-family:monospace}
+/* Ref list */
+.ref-row{display:flex;gap:8px;margin-bottom:7px;align-items:flex-start}
+.ref-row textarea{flex:1;padding:7px 10px;border:1.5px solid #dde2ea;border-radius:5px;font-size:.85rem;font-family:inherit;resize:vertical;min-height:48px;background:#fafbfc}
+.ref-row textarea:focus{outline:none;border-color:#4a90d9}
+/* Policy list */
+.pol-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+.pol-num{font-size:.82rem;font-weight:700;color:#1e3a5f;min-width:20px;padding-top:10px}
+.pol-row textarea{flex:1;padding:8px 11px;border:1.5px solid #dde2ea;border-radius:6px;font-size:.85rem;font-family:inherit;resize:vertical;min-height:56px;background:#fafbfc}
+.pol-row textarea:focus{outline:none;border-color:#4a90d9}
+/* Status bar */
+.sbar{position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;color:white;padding:9px 22px;font-size:.79rem;display:flex;align-items:center;gap:10px;transform:translateY(100%);transition:transform .2s;z-index:200}
+.sbar.show{transform:translateY(0)}.sbar.ok{background:#1a5e36}.sbar.err{background:#7a1a1a}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hint{font-size:.7rem;color:#aaa;font-style:italic;margin-top:3px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <a class="back-btn" href="/">← Curriculum Editor</a>
+    <div>
+      <div class="hdr-t">Syllabus Editor — {{ course.code }}</div>
+      <div class="hdr-s">{{ course.title }}</div>
+    </div>
+  </div>
+  <div class="hdr-a">
+    <span class="si" id="si"></span>
+    <button class="btn btn-save" onclick="saveSyllabus()">Save</button>
+    <button class="btn btn-docx" onclick="downloadDocx()">Download DOCX</button>
+    <button class="btn btn-pdf"  onclick="downloadPdf()">Download PDF</button>
+  </div>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="nav-g">Syllabus</div>
+  <a class="nav-i active" onclick="show('info',this)">1. Course Info</a>
+  <a class="nav-i" onclick="show('outcomes',this)">2. Course Outcomes</a>
+  <a class="nav-i" onclick="show('alignment',this)">3. CLO–PLO Alignment</a>
+  <a class="nav-i" onclick="show('assessment',this)">4. Assessment Blueprint</a>
+  <a class="nav-i" onclick="show('lp',this)">5. Learning Plan</a>
+  <a class="nav-i" onclick="show('grading',this)">6. Grading System</a>
+  <a class="nav-i" onclick="show('references',this)">7. References</a>
+  <a class="nav-i" onclick="show('policies',this)">8. Classroom Policies</a>
+</nav>
+
+<div class="main">
+
+<!-- 1. Course Info -->
+<div class="sec active" id="sec-info">
+  <div class="sec-hdr"><h2>1. Course Information</h2><p>Basic course details — synced with the curriculum editor</p></div>
+  <div class="card"><div class="g2">
+    <div class="field"><label>Course Code</label><input id="f_code" value="{{ course.code }}" readonly style="background:#f0f2f5;color:#888;cursor:not-allowed"></div>
+    <div class="field"><label>Course Title</label><input id="f_title" value="{{ course.title }}"></div>
+    <div class="field span2"><label>Description</label><textarea id="f_desc" style="min-height:100px">{{ course.desc }}</textarea></div>
+    <div class="field"><label>Credits</label><input id="f_credits" value="{{ course.credits }}" placeholder="e.g. 3"></div>
+    <div class="field"><label>Modality</label><input id="f_modality" value="{{ course.modality }}"></div>
+    <div class="field"><label>Contact Hours</label><input id="f_contact_hours" value="{{ course.contact_hours }}"></div>
+    <div class="field"><label>Pre-requisite / Co-requisite</label><input id="f_prereq" value="{{ course.prereq }}"></div>
+    <div class="field"><label>A.Y. and Semester</label><input id="f_ay_semester" value="{{ course.ay_semester }}" placeholder="e.g. 2026–2027, 1st Semester"></div>
+  </div></div>
+</div>
+
+<!-- 2. Course Outcomes (CLOs) -->
+<div class="sec" id="sec-outcomes">
+  <div class="sec-hdr"><h2>2. Course Outcomes (CLOs)</h2><p>These map to the PLO-CLO alignment table in section 3</p></div>
+  <div class="card">
+    <h3>Course Learning Outcomes</h3>
+    <div id="clo-list"></div>
+    <button class="btn-add-row" onclick="addCLO()">+ Add Course Outcome</button>
+  </div>
+</div>
+
+<!-- 3. CLO-PLO Alignment -->
+<div class="sec" id="sec-alignment">
+  <div class="sec-hdr">
+    <h2>3. CLO–PLO Alignment</h2>
+    <p>For each CLO (column), mark how it addresses each PLO (row) using <strong>I</strong> = Introduced, <strong>P</strong> = Practiced, <strong>D</strong> = Demonstrated. This drives the Curriculum Map.</p>
+  </div>
+  <div class="card">
+    <h3>Alignment Matrix</h3>
+    <div id="cloplo-hint" style="display:none;padding:24px 16px;text-align:center;color:#888;background:#fafbfc;border-radius:8px;border:2px dashed #dde2ea">
+      <div style="font-size:1.5rem;margin-bottom:8px">📋</div>
+      <div style="font-size:.9rem;font-weight:700;color:#555;margin-bottom:6px">No Course Outcomes (CLOs) defined yet</div>
+      <div style="font-size:.82rem;margin-bottom:14px">You need to add CLOs before you can map them to PLOs.</div>
+      <button class="btn btn-save" style="font-size:.82rem;padding:7px 18px" onclick="
+        document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+        document.querySelectorAll('.nav-i').forEach(n=>n.classList.remove('active'));
+        document.getElementById('sec-outcomes').classList.add('active');
+        document.querySelector('[onclick*=\'outcomes\']').classList.add('active');
+      ">Go to Section 2 — Add CLOs</button>
+    </div>
+    <div class="cloplo-wrap"><table class="cloplo-tbl" id="cloplo-tbl"></table></div>
+    <div style="margin-top:14px">
+      <div style="font-size:.75rem;font-weight:700;color:#555;margin-bottom:6px">CURRICULUM MAP — Aggregated PLO values (updated on save):</div>
+      <div class="sync-badge" id="sync-badge"></div>
+      <div class="hint"><strong>I</strong> = Introduced &nbsp;·&nbsp; <strong>P</strong> = Practiced &nbsp;·&nbsp; <strong>D</strong> = Demonstrated &nbsp;·&nbsp; Values sync to the Curriculum Map in the main editor</div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. Learning Plan -->
+<div class="sec" id="sec-lp">
+  <div class="sec-hdr"><h2>5. Learning Plan</h2><p>Weekly schedule — CO columns auto-update when you add/remove CLOs</p></div>
+  <div class="card" style="padding:14px 10px">
+    <h3>Weekly Schedule</h3>
+    <div class="lp-wrap"><table class="lp-tbl" id="lp-tbl"></table></div>
+    <button class="btn-add-row" style="margin-top:10px" onclick="addLPRow()">+ Add Week</button>
+  </div>
+</div>
+
+<!-- 4. Assessment Blueprint -->
+<div class="sec" id="sec-assessment">
+  <div class="sec-hdr"><h2>4. Assessment Blueprint</h2></div>
+  <div class="card">
+    <h3>Assessment Items</h3>
+    <div id="ab-list"></div>
+    <button class="btn-add-row" onclick="addABRow()">+ Add Assessment Item</button>
+  </div>
+</div>
+
+<!-- 6. Grading System -->
+<div class="sec" id="sec-grading">
+  <div class="sec-hdr"><h2>6. Grading System</h2><p>Standard MSU-IIT grade equivalents (fixed)</p></div>
+  <div class="card">
+    <table style="border-collapse:collapse;font-size:.85rem;width:360px">
+      <tr style="background:#1e3a5f;color:white">
+        <th style="padding:8px 12px;border:1px solid #15294a">% Score</th>
+        <th style="padding:8px 12px;border:1px solid #15294a">Grade</th>
+        <th style="padding:8px 12px;border:1px solid #15294a">% Score</th>
+        <th style="padding:8px 12px;border:1px solid #15294a">Grade</th>
+      </tr>
+      {% for row in [('97–100%','1.00','82–84%','2.25'),('94–96%','1.25','79–81%','2.50'),('91–93%','1.50','76–78%','2.75'),('88–90%','1.75','75%','3.00'),('85–87%','2.00','Below 75%','5.00')] %}
+      <tr>
+        {% for cell in row %}<td style="padding:6px 12px;border:1px solid #d0d8e8;text-align:center">{{ cell }}</td>{% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<!-- 7. References -->
+<div class="sec" id="sec-references">
+  <div class="sec-hdr"><h2>7. References</h2></div>
+  <div class="card"><h3>Textbooks</h3><div id="ref-textbooks"></div><button class="btn-add-row" onclick="addRef('textbooks')">+ Add Textbook</button></div>
+  <div class="card"><h3>Journals</h3><div id="ref-journals"></div><button class="btn-add-row" onclick="addRef('journals')">+ Add Journal</button></div>
+  <div class="card"><h3>Online Resources</h3><div id="ref-online"></div><button class="btn-add-row" onclick="addRef('online')">+ Add Online Resource</button></div>
+</div>
+
+<!-- 8. Classroom Policies -->
+<div class="sec" id="sec-policies">
+  <div class="sec-hdr"><h2>8. Classroom Policies</h2></div>
+  <div class="card">
+    <h3>Policy Items</h3>
+    <div id="pol-list"></div>
+    <button class="btn-add-row" onclick="addPolicy()">+ Add Policy</button>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<div class="sbar" id="sbar"><div class="spin" id="spin"></div><span id="smsg"></span></div>
+
+<script>
+const COURSE_CODE = {{ course.code | tojson }};
+const OUTCOMES    = {{ outcomes | tojson }};
+
+// ── State (initialized from server) ─────────────────────────────────────────
+let closData      = {{ course.clos | tojson }};
+let cloPloMap     = {{ course.clo_plo_map | tojson }};
+let learningPlan  = {{ course.learning_plan | tojson }};
+let assessmentBP  = {{ course.assessment_blueprint | tojson }};
+let references    = {{ course.references | tojson }};
+let policies      = {{ course.policies | tojson }};
+let currentPloMap = {{ course.plo_map | tojson }};
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+function show(name, el) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-i').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  el.classList.add('active');
+  if (name === 'alignment') { renderCLOPLO(); renderSyncBadge(); }
+  if (name === 'lp')        renderLearningPlan();
+  if (name === 'assessment') renderAssessment();
+  if (name === 'references') renderReferences();
+  if (name === 'policies')   renderPolicies();
+}
+
+// ── CLOs ─────────────────────────────────────────────────────────────────────
+function renderCLOs() {
+  const el = document.getElementById('clo-list');
+  el.innerHTML = '';
+  closData.forEach((clo, i) => {
+    const div = document.createElement('div');
+    div.className = 'clo-row';
+    div.innerHTML = `
+      <input class="clo-code-input" placeholder="CO1" value="${esc(clo.code)}"
+             oninput="closData[${i}].code=this.value;triggerUnsaved()">
+      <textarea class="clo-desc-input" placeholder="Describe what students will be able to do…"
+                oninput="closData[${i}].description=this.value;triggerUnsaved()">${esc(clo.description)}</textarea>
+      <button class="btn-del" onclick="removeCLO(${i})">✕</button>`;
+    el.appendChild(div);
+  });
+}
+
+function addCLO() {
+  const nextNum = closData.length + 1;
+  closData.push({code: `CO${nextNum}`, description: ''});
+  // Extend clo_plo_map for new CLO
+  cloPloMap[`CO${nextNum}`] = {};
+  OUTCOMES.forEach(o => cloPloMap[`CO${nextNum}`][o.code] = '');
+  learningPlan.forEach(row => { if (row.cos) row.cos[`CO${nextNum}`] = ''; });
+  renderCLOs();
+  triggerUnsaved();
+}
+
+function removeCLO(i) {
+  const code = closData[i].code;
+  if (!confirm(`Remove ${code}?`)) return;
+  delete cloPloMap[code];
+  // Remove from learning plan cos
+  learningPlan.forEach(row => { if (row.cos) delete row.cos[code]; });
+  closData.splice(i, 1);
+  renderCLOs();
+  triggerUnsaved();
+}
+
+// ── CLO-PLO Alignment ────────────────────────────────────────────────────────
+function renderCLOPLO() {
+  const tbl = document.getElementById('cloplo-tbl');
+  tbl.innerHTML = '';
+  const hint = document.getElementById('cloplo-hint');
+
+  if (closData.length === 0) {
+    tbl.style.display = 'none';
+    hint.style.display = 'block';
+    return;
+  }
+  tbl.style.display = '';
+  hint.style.display = 'none';
+
+  const thead = tbl.createTHead();
+  const hr = thead.insertRow();
+  const th0 = document.createElement('th');
+  th0.className = 'th-plo'; th0.textContent = 'Program Learning Outcomes (PLOs)';
+  hr.appendChild(th0);
+  closData.forEach(clo => {
+    const th = document.createElement('th');
+    th.textContent = clo.code || '—';
+    hr.appendChild(th);
+  });
+
+  const tbody = tbl.createTBody();
+  OUTCOMES.forEach(o => {
+    const tr = tbody.insertRow();
+    const tdPlo = tr.insertCell();
+    tdPlo.className = 'td-plo';
+    tdPlo.innerHTML = `<strong>${esc(o.code)}</strong> – ${esc(o.title)}`;
+    closData.forEach(clo => {
+      const td = tr.insertCell();
+      td.appendChild(buildIPDCell(clo.code, o.code, (cloPloMap[clo.code] || {})[o.code] || ''));
+    });
+  });
+}
+
+function buildIPDCell(cloCode, ploCode, currentVal) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ipd-cell';
+  ['I','P','D'].forEach(letter => {
+    const btn = document.createElement('button');
+    btn.className = 'ipd-btn' + (currentVal.includes(letter) ? ' on-'+letter : '');
+    btn.textContent = letter;
+    btn.title = letter === 'I' ? 'Introduced' : letter === 'P' ? 'Practiced' : 'Demonstrated';
+    btn.onclick = () => {
+      if (!cloPloMap[cloCode]) cloPloMap[cloCode] = {};
+      let cur = cloPloMap[cloCode][ploCode] || '';
+      if (cur.includes(letter)) {
+        cur = cur.replace(letter, '');
+        btn.className = 'ipd-btn';
+      } else {
+        cur = ['I','P','D'].filter(x => x === letter || cur.includes(x)).join('');
+        btn.className = 'ipd-btn on-' + letter;
+      }
+      cloPloMap[cloCode][ploCode] = cur;
+      renderSyncBadge();
+      triggerUnsaved();
+    };
+    wrap.appendChild(btn);
+  });
+  return wrap;
+}
+
+function buildLPIPDCell(rowIdx, cloCode, currentVal) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ipd-cell';
+  ['I','P','D'].forEach(letter => {
+    const btn = document.createElement('button');
+    btn.className = 'ipd-btn' + (currentVal.includes(letter) ? ' on-'+letter : '');
+    btn.textContent = letter;
+    btn.title = letter === 'I' ? 'Introduced' : letter === 'P' ? 'Practiced' : 'Demonstrated';
+    btn.onclick = () => {
+      if (!learningPlan[rowIdx].cos) learningPlan[rowIdx].cos = {};
+      let cur = learningPlan[rowIdx].cos[cloCode] || '';
+      if (typeof cur === 'boolean') cur = cur ? 'I' : '';
+      if (cur.includes(letter)) {
+        cur = cur.replace(letter, '');
+        btn.className = 'ipd-btn';
+      } else {
+        cur = ['I','P','D'].filter(x => x === letter || cur.includes(x)).join('');
+        btn.className = 'ipd-btn on-' + letter;
+      }
+      learningPlan[rowIdx].cos[cloCode] = cur;
+      triggerUnsaved();
+    };
+    wrap.appendChild(btn);
+  });
+  return wrap;
+}
+
+function renderSyncBadge() {
+  const el = document.getElementById('sync-badge');
+  el.innerHTML = OUTCOMES.map(o => {
+    const letters = new Set();
+    closData.forEach(clo => {
+      for (const l of ((cloPloMap[clo.code] || {})[o.code] || ''))
+        if ('IPD'.includes(l)) letters.add(l);
+    });
+    const combined = ['I','P','D'].filter(l => letters.has(l)).join('');
+    return `<span class="sb-chip ${combined?'on':'off'}" title="${o.title}">${o.code}${combined ? ':'+combined : ''}</span>`;
+  }).join('');
+}
+
+// ── Learning Plan ─────────────────────────────────────────────────────────────
+function renderLearningPlan() {
+  const tbl = document.getElementById('lp-tbl');
+  tbl.innerHTML = '';
+  const thead = tbl.createTHead();
+  const hr1 = thead.insertRow();
+  [['Week','td-week'],['Topics',''],['Lesson Learning Outcome (LLO)','']].forEach(([t,c]) => {
+    const th = document.createElement('th');
+    th.textContent = t; if(c) th.className = c;
+    th.className = 'th-left ' + c;
+    hr1.appendChild(th);
+  });
+  if (closData.length) {
+    const thCO = document.createElement('th');
+    thCO.colSpan = closData.length;
+    thCO.textContent = 'Course Outcomes';
+    hr1.appendChild(thCO);
+  }
+  ['Teaching-Learning Activities / Methodologies','Learning Resources','Assessment',''].forEach(t => {
+    const th = document.createElement('th');
+    th.className = t ? 'th-left' : '';
+    th.textContent = t;
+    hr1.appendChild(th);
+  });
+
+  if (closData.length) {
+    const hr2 = thead.insertRow();
+    [null,null,null].forEach(() => hr2.insertCell());
+    closData.forEach(clo => {
+      const th = document.createElement('th');
+      th.textContent = clo.code;
+      hr2.appendChild(th);
+    });
+    [null,null,null,null].forEach(() => hr2.insertCell());
+  }
+
+  const tbody = tbl.createTBody();
+  learningPlan.forEach((row, i) => {
+    const tr = tbody.insertRow();
+    const tdWeek = tr.insertCell(); tdWeek.className = 'td-week';
+    tdWeek.innerHTML = `<input value="${esc(row.week||'')}" oninput="learningPlan[${i}].week=this.value;triggerUnsaved()">`;
+
+    const tdTopic = tr.insertCell();
+    tdTopic.innerHTML = `<textarea oninput="learningPlan[${i}].topic=this.value;triggerUnsaved()">${esc(row.topic||'')}</textarea>`;
+
+    const tdLLO = tr.insertCell();
+    tdLLO.innerHTML = `<textarea oninput="learningPlan[${i}].llo=this.value;triggerUnsaved()">${esc(row.llo||'')}</textarea>`;
+
+    closData.forEach(clo => {
+      const td = tr.insertCell(); td.className = 'td-co';
+      let val = (row.cos || {})[clo.code];
+      if (typeof val === 'boolean') val = val ? 'I' : '';
+      td.appendChild(buildLPIPDCell(i, clo.code, val || ''));
+    });
+
+    ['methods','resources','assessment'].forEach(key => {
+      const td = tr.insertCell();
+      td.innerHTML = `<textarea oninput="learningPlan[${i}]['${key}']=this.value;triggerUnsaved()">${esc(row[key]||'')}</textarea>`;
+    });
+
+    const tdDel = tr.insertCell(); tdDel.className = 'td-del';
+    tdDel.innerHTML = `<button title="Remove row" onclick="removeLPRow(${i})">✕</button>`;
+  });
+}
+
+function addLPRow() {
+  const cos = {};
+  closData.forEach(c => cos[c.code] = '');
+  learningPlan.push({week:'', topic:'', llo:'', cos, methods:'', resources:'', assessment:''});
+  renderLearningPlan();
+  triggerUnsaved();
+}
+
+function removeLPRow(i) {
+  learningPlan.splice(i, 1);
+  renderLearningPlan();
+  triggerUnsaved();
+}
+
+// ── Assessment Blueprint ──────────────────────────────────────────────────────
+function renderAssessment() {
+  const el = document.getElementById('ab-list');
+  el.innerHTML = '';
+  assessmentBP.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'ab-row';
+    const cloOpts = closData.map(c =>
+      `<option value="${esc(c.code)}" ${item.clo===c.code?'selected':''}>${esc(c.code)}</option>`
+    ).join('');
+    div.innerHTML = `
+      <div class="ab-hdr">
+        <span class="ab-label">Item ${i+1}</span>
+        <button class="btn-del" onclick="removeABRow(${i})">✕ Remove</button>
+      </div>
+      <div class="g2">
+        <div class="field"><label>CLO</label>
+          <select onchange="assessmentBP[${i}].clo=this.value;triggerUnsaved()">
+            <option value="">— select —</option>${cloOpts}
+          </select>
+        </div>
+        <div class="field"><label>Learning Taxonomy</label>
+          <select onchange="assessmentBP[${i}].taxonomy=this.value;triggerUnsaved()">
+            ${['','Remember','Understand','Apply','Analyze','Evaluate','Create'].map(t=>
+              `<option ${item.taxonomy===t?'selected':''}>${t}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field span2"><label>Learning Outcome Description</label>
+          <textarea oninput="assessmentBP[${i}].description=this.value;triggerUnsaved()">${esc(item.description||'')}</textarea>
+        </div>
+        <div class="field"><label>Primary Assessment Tool / Task</label>
+          <input value="${esc(item.tool||'')}" oninput="assessmentBP[${i}].tool=this.value;triggerUnsaved()">
+        </div>
+        <div class="field"><label>Rubric / Evidence Reference</label>
+          <input value="${esc(item.rubric||'')}" oninput="assessmentBP[${i}].rubric=this.value;triggerUnsaved()">
+        </div>
+        <div class="field"><label>Weight (%)</label>
+          <input type="number" min="0" max="100" value="${esc(item.weight||'')}"
+                 oninput="assessmentBP[${i}].weight=this.value;triggerUnsaved()">
+        </div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+function addABRow() {
+  assessmentBP.push({clo:'', description:'', taxonomy:'', tool:'', rubric:'', weight:''});
+  renderAssessment();
+  triggerUnsaved();
+}
+
+function removeABRow(i) {
+  assessmentBP.splice(i, 1);
+  renderAssessment();
+  triggerUnsaved();
+}
+
+// ── References ────────────────────────────────────────────────────────────────
+function renderReferences() {
+  ['textbooks','journals','online'].forEach(key => {
+    const el = document.getElementById('ref-' + key);
+    el.innerHTML = '';
+    (references[key] || []).forEach((val, i) => {
+      const div = document.createElement('div');
+      div.className = 'ref-row';
+      div.innerHTML = `
+        <span style="font-size:.78rem;font-weight:700;color:#888;padding-top:9px;min-width:20px">${i+1}.</span>
+        <textarea placeholder="Full citation…" oninput="references['${key}'][${i}]=this.value;triggerUnsaved()">${esc(val)}</textarea>
+        <button class="btn-del" style="margin-top:6px" onclick="removeRef('${key}',${i})">✕</button>`;
+      el.appendChild(div);
+    });
+  });
+}
+
+function addRef(key) {
+  if (!references[key]) references[key] = [];
+  references[key].push('');
+  renderReferences();
+  triggerUnsaved();
+}
+
+function removeRef(key, i) {
+  references[key].splice(i, 1);
+  renderReferences();
+  triggerUnsaved();
+}
+
+// ── Policies ──────────────────────────────────────────────────────────────────
+function renderPolicies() {
+  const el = document.getElementById('pol-list');
+  el.innerHTML = '';
+  policies.forEach((pol, i) => {
+    const div = document.createElement('div');
+    div.className = 'pol-row';
+    div.innerHTML = `
+      <span class="pol-num">${i+1}.</span>
+      <textarea oninput="policies[${i}]=this.value;triggerUnsaved()">${esc(pol)}</textarea>
+      <button class="btn-del" style="margin-top:6px" onclick="removePolicy(${i})">✕</button>`;
+    el.appendChild(div);
+  });
+}
+
+function addPolicy() {
+  policies.push('');
+  renderPolicies();
+  triggerUnsaved();
+}
+
+function removePolicy(i) {
+  policies.splice(i, 1);
+  renderPolicies();
+  triggerUnsaved();
+}
+
+// ── Save / Download ───────────────────────────────────────────────────────────
+function collectData() {
+  return {
+    title:    document.getElementById('f_title').value,
+    desc:     document.getElementById('f_desc').value,
+    credits:  document.getElementById('f_credits').value,
+    modality: document.getElementById('f_modality').value,
+    contact_hours: document.getElementById('f_contact_hours').value,
+    prereq:   document.getElementById('f_prereq').value,
+    ay_semester: document.getElementById('f_ay_semester').value,
+    clos:     closData,
+    clo_plo_map: cloPloMap,
+    learning_plan: learningPlan,
+    assessment_blueprint: assessmentBP,
+    references,
+    policies,
+  };
+}
+
+function saveSyllabus() {
+  document.getElementById('si').textContent = 'Saving…';
+  fetch(`/syllabus/${encodeURIComponent(COURSE_CODE)}/save`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(collectData()),
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.error) { setStatus('Error: ' + res.error, 'err'); return; }
+    currentPloMap = res.plo_map || {};
+    renderSyncBadge();
+    document.getElementById('si').textContent = 'Saved ✓';
+    setTimeout(() => document.getElementById('si').textContent = '', 2500);
+  })
+  .catch(() => setStatus('Network error', 'err'));
+}
+
+function downloadDocx() {
+  saveSyllabus();
+  setTimeout(() => { window.location = `/syllabus/${encodeURIComponent(COURSE_CODE)}/docx`; }, 600);
+}
+
+function downloadPdf() {
+  saveSyllabus();
+  setTimeout(() => { window.location = `/syllabus/${encodeURIComponent(COURSE_CODE)}/pdf`; }, 600);
+}
+
+// Auto-save debounce
+let saveTimer = null;
+function triggerUnsaved() {
+  clearTimeout(saveTimer);
+  document.getElementById('si').textContent = 'Unsaved changes';
+  saveTimer = setTimeout(saveSyllabus, 2000);
+}
+document.querySelectorAll('input,textarea,select').forEach(el => {
+  if (el.id && el.id.startsWith('f_')) el.addEventListener('input', triggerUnsaved);
+});
+
+function setStatus(msg, type) {
+  const bar = document.getElementById('sbar');
+  bar.className = 'sbar show' + (type ? ' '+type : '');
+  document.getElementById('smsg').textContent = msg;
+  document.getElementById('spin').style.display = type ? 'none' : 'block';
+  if (type) setTimeout(() => bar.classList.remove('show'), 4000);
+}
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderCLOs();
+renderSyncBadge();
+</script>
+</body>
+</html>
