@@ -96,7 +96,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pol-row textarea:focus{outline:none;border-color:#4a90d9}
 /* Required fields */
 .req{color:#c0392b}
-.field select.missing{border-color:#c0392b;background:#fdf3f2}
+.opt{color:#aaa;font-weight:400;text-transform:none;letter-spacing:0}
+.field select.missing,.field input.missing{border-color:#c0392b;background:#fdf3f2}
 .req-msg{font-size:.8rem;color:#c0392b;font-weight:600}
 /* Grading system */
 .gs-tbl{border-collapse:collapse;font-size:.85rem;width:100%;max-width:560px}
@@ -161,7 +162,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="field"><label>Modality</label><input id="f_modality" value="{{ course.modality }}"></div>
     <div class="field"><label>Contact Hours</label><input id="f_contact_hours" value="{{ course.contact_hours }}"></div>
     <div class="field"><label>Pre-requisite / Co-requisite</label><input id="f_prereq" value="{{ course.prereq }}"></div>
-    <div class="field"><label>Academic Year <span class="req">*</span></label>
+    <div class="field"><label>Academic Year <span class="opt">(optional)</span></label>
       <select id="ay_year" onchange="updateAY()"></select>
     </div>
     <div class="field"><label>Semester <span class="req">*</span></label>
@@ -170,10 +171,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <option>1st Semester</option>
         <option>2nd Semester</option>
         <option>Summer</option>
+        <option value="__other__">Other…</option>
       </select>
-      {% if curriculum_term %}<div class="hint">Curriculum: {{ curriculum_term }}</div>{% else %}<div class="hint">Elective / specialization course: choose the semester it is offered.</div>{% endif %}
+      <input id="ay_sem_other" placeholder="e.g. As offered, 1st or 2nd Semester" oninput="updateAY()" style="display:none;margin-top:6px">
+      {% if curriculum_term %}<div class="hint">Curriculum: {{ curriculum_term }}</div>{% else %}<div class="hint">Elective / specialization course: choose the semester it is offered, or Other… to type your own (e.g. "As offered").</div>{% endif %}
     </div>
-    <div class="field span2" id="ay_err" style="display:none"><div class="req-msg">A.Y. and Semester is required. Choose both an academic year and a semester.</div></div>
+    <div class="field span2" id="ay_err" style="display:none"><div class="req-msg">Semester is required. Choose a semester, or Other… and type one.</div></div>
     <input type="hidden" id="f_ay_semester" value="{{ course.ay_semester }}">
   </div></div>
 </div>
@@ -645,44 +648,56 @@ function removePolicy(i) {
 // ── A.Y. and Semester (required) ─────────────────────────────────────────────
 const CURRICULUM_SEMESTER = {{ curriculum_semester | tojson }};
 
+const SEMESTER_OPTIONS = ['1st Semester', '2nd Semester', 'Summer'];
+
 function initAY() {
-  const raw = document.getElementById('f_ay_semester').value || '';
-  const m = raw.match(/(\d{4})\s*[-–]\s*(\d{4})/);
+  const raw = (document.getElementById('f_ay_semester').value || '').trim();
+  const m = raw.match(/^(\d{4})\s*[-–]\s*(\d{4})\s*,?\s*/);
   const now = new Date();
   const base = now.getMonth() >= 5 ? now.getFullYear() : now.getFullYear() - 1;  // A.Y. starts mid-year
   const years = [];
   for (let y = base - 2; y <= base + 4; y++) years.push(y);
   if (m && !years.includes(+m[1])) { years.push(+m[1]); years.sort(); }
   const ySel = document.getElementById('ay_year');
-  ySel.innerHTML = '<option value="">— select —</option>' +
+  ySel.innerHTML = '<option value="">— none —</option>' +
     years.map(y => `<option value="${y}–${y+1}">${y}–${y+1}</option>`).join('');
   if (m) ySel.value = `${m[1]}–${+m[1]+1}`;
 
-  let sem = '';
-  if (/summer|mid-?year/i.test(raw)) sem = 'Summer';
-  else if (/2nd|second/i.test(raw)) sem = '2nd Semester';
-  else if (/1st|first/i.test(raw)) sem = '1st Semester';
-  else sem = CURRICULUM_SEMESTER;  // core courses: preselect the curriculum's semester
+  // Whatever follows the year is the semester: a standard option, or free text ("Other…").
+  const rest = m ? raw.slice(m[0].length).trim() : raw;
+  let sem = '', other = '';
+  if (!rest) sem = CURRICULUM_SEMESTER;  // core courses: preselect the curriculum's semester
+  else if (/^(summer|mid-?year)/i.test(rest)) sem = 'Summer';
+  else if (/^(2nd|second)\s+sem(ester)?$/i.test(rest)) sem = '2nd Semester';
+  else if (/^(1st|first)\s+sem(ester)?$/i.test(rest)) sem = '1st Semester';
+  else { sem = '__other__'; other = rest; }
   document.getElementById('ay_sem').value = sem;
-  // Normalise the stored value to what the dropdowns show (saved on the next edit).
+  document.getElementById('ay_sem_other').value = other;
+  // Normalise the stored value to what the fields show (saved on the next edit).
   document.getElementById('f_ay_semester').value = composeAY();
   markAY(false);
 }
 
+function semesterValue() {
+  const sel = document.getElementById('ay_sem');
+  const other = document.getElementById('ay_sem_other');
+  other.style.display = sel.value === '__other__' ? '' : 'none';
+  return sel.value === '__other__' ? other.value.trim() : sel.value;
+}
+
 function composeAY() {
-  return [document.getElementById('ay_year').value, document.getElementById('ay_sem').value]
-    .filter(Boolean).join(', ');
+  return [document.getElementById('ay_year').value, semesterValue()].filter(Boolean).join(', ');
 }
 
 function ayComplete() {
-  return !!(document.getElementById('ay_year').value && document.getElementById('ay_sem').value);
+  return !!semesterValue();
 }
 
 function markAY(showErrors) {
-  ['ay_year','ay_sem'].forEach(id => {
-    const el = document.getElementById(id);
-    el.classList.toggle('missing', !el.value);
-  });
+  const sel = document.getElementById('ay_sem');
+  const other = document.getElementById('ay_sem_other');
+  sel.classList.toggle('missing', !sel.value);
+  other.classList.toggle('missing', sel.value === '__other__' && !other.value.trim());
   document.getElementById('ay_err').style.display = (showErrors && !ayComplete()) ? '' : 'none';
 }
 
@@ -692,12 +707,12 @@ function updateAY() {
   triggerUnsaved();
 }
 
-// Downloads need A.Y. and Semester; jump to Course Info if it is missing.
+// Downloads need a semester; jump to Course Info if it is missing.
 function requireAY() {
   if (ayComplete()) return true;
   show('info', document.querySelector('.nav-i'));
   markAY(true);
-  setStatus('Set the A.Y. and Semester before downloading the syllabus.', 'err');
+  setStatus('Set the Semester before downloading the syllabus.', 'err');
   return false;
 }
 

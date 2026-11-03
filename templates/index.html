@@ -422,7 +422,7 @@ const SYLLABUS_COMPONENTS = [
       return r && ([...(r.textbooks||[]),...(r.journals||[]),...(r.online||[])].some(x => x && x.trim()));
     }
   },
-  { key: 'ay_semester', label: 'AY/Semester', check: c => /^\s*\d{4}\s*[-–]\s*\d{4}\s*,\s*\S/.test(c.ay_semester || '') },
+  { key: 'ay_semester', label: 'AY/Semester', check: c => !!(c.ay_semester || '').replace(/^\s*\d{4}\s*[-–]\s*\d{4}\s*,?\s*/, '').trim() },
 ];
 
 function syllabusStatus(c) {

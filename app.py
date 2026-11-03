@@ -401,12 +401,13 @@ CURRICULUM_SEMESTERS = {
     'CSC299': ('2nd Semester', 'Second Year, Second Semester'),
 }
 
-_AY_SEMESTER_RE = re.compile(r'^\s*\d{4}\s*[-–]\s*\d{4}\s*,\s*\S')
+_AY_YEAR_PREFIX_RE = re.compile(r'^\s*\d{4}\s*[-–]\s*\d{4}\s*,?\s*')
 
 
 def ay_semester_complete(value):
-    """True when the value has both an academic year and a semester, e.g. '2026–2027, 1st Semester'."""
-    return bool(_AY_SEMESTER_RE.match(value or ''))
+    """True when a semester is set. The academic year is optional, so '1st Semester',
+    'As offered' and '2026–2027, 1st Semester' all count; '2025–2026' alone does not."""
+    return bool(_AY_YEAR_PREFIX_RE.sub('', value or '', count=1).strip())
 
 
 def get_course_index(data, code):
@@ -494,7 +495,7 @@ def download_syllabus_pdf(code):
     course = dict(data['courses'][idx])
     ensure_syllabus_fields(course)
     if not ay_semester_complete(course.get('ay_semester')):
-        return ('A.Y. and Semester is required. Set it in Course Info before downloading the syllabus.', 400)
+        return ('Semester is required. Set it in Course Info before downloading the syllabus.', 400)
     outcomes_raw = data.get('outcomes', DEFAULTS['outcomes'])
     outcomes = []
     for o in outcomes_raw:
@@ -528,7 +529,7 @@ def download_syllabus_docx(code):
     course = dict(data['courses'][idx])
     ensure_syllabus_fields(course)
     if not ay_semester_complete(course.get('ay_semester')):
-        return ('A.Y. and Semester is required. Set it in Course Info before downloading the syllabus.', 400)
+        return ('Semester is required. Set it in Course Info before downloading the syllabus.', 400)
     outcomes_raw = data.get('outcomes', DEFAULTS['outcomes'])
     # Enrich outcomes with full PLO descriptions for the alignment table
     outcomes = []
