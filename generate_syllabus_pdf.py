@@ -387,14 +387,16 @@ def generate_tex(course, outcomes):
     lines.append(r'\multicolumn{4}{|c|}{\textbf{Grade Equivalent}} \\')
     lines.append(r'\hline')
     lines.append(r'\endhead')
-    for row in [
-        (r'97\% -- 100\%', '1.00', r'82\% -- 84\%', '2.25'),
-        (r'94\% -- 96\%',  '1.25', r'79\% -- 81\%', '2.50'),
-        (r'91\% -- 93\%',  '1.50', r'76\% -- 78\%', '2.75'),
-        (r'88\% -- 90\%',  '1.75', r'75\%',          '3.00'),
-        (r'85\% -- 87\%',  '2.00', r'Below 75\%',   '5.00'),
-    ]:
-        lines.append(' & '.join(row) + r' \\')
+    # Editable scale: fill the left column pair first, then the right.
+    grading = [g for g in course.get('grading_system', [])
+               if str(g.get('range', '')).strip() or str(g.get('grade', '')).strip()]
+    half = (len(grading) + 1) // 2
+    def gcell(g):
+        rng = esc(g.get('range', '')).replace('–', '--').replace('—', '--')
+        return [rng, esc(g.get('grade', ''))]
+    for i in range(half):
+        right = gcell(grading[half + i]) if half + i < len(grading) else ['', '']
+        lines.append(' & '.join(gcell(grading[i]) + right) + r' \\')
     lines.append(r'\hline')
     lines.append(r'\end{longtable}')
     lines.append('')
@@ -447,7 +449,7 @@ def generate(course, outcomes, out_path):
     for _ in range(2):
         result = subprocess.run(
             ['pdflatex', '-interaction=nonstopmode', '-output-directory', tmp, tex_file],
-            capture_output=True, text=True, cwd=tmp, timeout=120,
+            capture_output=True, text=True, errors='replace', cwd=tmp, timeout=120,
         )
 
     pdf_tmp = os.path.join(tmp, 'syllabus.pdf')

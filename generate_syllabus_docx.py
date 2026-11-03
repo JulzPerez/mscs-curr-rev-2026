@@ -304,14 +304,16 @@ def generate(course, outcomes, output_path):
     for j in range(4):
         _cell(gt.rows[0].cells[j], 'Grade Equivalent', bold=True, size=10,
               align=WD_ALIGN_PARAGRAPH.CENTER)
-    _cell(gt.rows[1].cells[0], '97% - 100%\n94% - 96%\n91% - 93%\n88% - 90%\n85% - 87%',
-          size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
-    _cell(gt.rows[1].cells[1], '1.00\n1.25\n1.50\n1.75\n2.00',
-          size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
-    _cell(gt.rows[1].cells[2], '82% - 84%\n79% - 81%\n76% - 78%\n75%\nBelow 75%',
-          size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
-    _cell(gt.rows[1].cells[3], '2.25\n2.50\n2.75\n3.00\n5.00',
-          size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
+    # Editable scale: fill the left column pair first, then the right.
+    grading = [g for g in course.get('grading_system', [])
+               if str(g.get('range', '')).strip() or str(g.get('grade', '')).strip()]
+    half = (len(grading) + 1) // 2
+    cols = [grading[:half], grading[half:]]
+    for c, part in enumerate(cols):
+        _cell(gt.rows[1].cells[c * 2], '\n'.join(str(g.get('range', '')) for g in part),
+              size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
+        _cell(gt.rows[1].cells[c * 2 + 1], '\n'.join(str(g.get('grade', '')) for g in part),
+              size=10, align=WD_ALIGN_PARAGRAPH.CENTER)
 
     # ── 7. References ─────────────────────────────────────────────────────────
     _heading(doc, 7, 'References')

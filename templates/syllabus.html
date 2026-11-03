@@ -94,6 +94,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pol-num{font-size:.82rem;font-weight:700;color:#1e3a5f;min-width:20px;padding-top:10px}
 .pol-row textarea{flex:1;padding:8px 11px;border:1.5px solid #dde2ea;border-radius:6px;font-size:.85rem;font-family:inherit;resize:vertical;min-height:56px;background:#fafbfc}
 .pol-row textarea:focus{outline:none;border-color:#4a90d9}
+/* Required fields */
+.req{color:#c0392b}
+.field select.missing{border-color:#c0392b;background:#fdf3f2}
+.req-msg{font-size:.8rem;color:#c0392b;font-weight:600}
+/* Grading system */
+.gs-tbl{border-collapse:collapse;font-size:.85rem;width:100%;max-width:560px}
+.gs-tbl th{background:#1e3a5f;color:white;padding:7px 10px;border:1px solid #15294a;font-size:.75rem}
+.gs-tbl td{border:1px solid #d0d8e8;padding:4px 6px}
+.gs-tbl td.gs-num{text-align:center;font-weight:700;color:#888;font-size:.78rem}
+.gs-tbl input{width:100%;border:none;background:transparent;font-size:.85rem;font-family:inherit;padding:5px 6px}
+.gs-tbl input:focus{outline:1px solid #4a90d9;background:#f0f6ff;border-radius:3px}
+.gs-tbl td.gs-act{white-space:nowrap;text-align:center}
+.gs-tbl td.gs-act button{background:none;border:none;cursor:pointer;font-size:.85rem;padding:2px 4px;color:#1e3a5f}
+.gs-tbl td.gs-act button:disabled{color:#ccc;cursor:default}
+.gs-tbl td.gs-act button.gs-del{color:#c0392b}
 /* Status bar */
 .sbar{position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;color:white;padding:9px 22px;font-size:.79rem;display:flex;align-items:center;gap:10px;transform:translateY(100%);transition:transform .2s;z-index:200}
 .sbar.show{transform:translateY(0)}.sbar.ok{background:#1a5e36}.sbar.err{background:#7a1a1a}
@@ -146,7 +161,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="field"><label>Modality</label><input id="f_modality" value="{{ course.modality }}"></div>
     <div class="field"><label>Contact Hours</label><input id="f_contact_hours" value="{{ course.contact_hours }}"></div>
     <div class="field"><label>Pre-requisite / Co-requisite</label><input id="f_prereq" value="{{ course.prereq }}"></div>
-    <div class="field"><label>A.Y. and Semester</label><input id="f_ay_semester" value="{{ course.ay_semester }}" placeholder="e.g. 2026–2027, 1st Semester"></div>
+    <div class="field"><label>Academic Year <span class="req">*</span></label>
+      <select id="ay_year" onchange="updateAY()"></select>
+    </div>
+    <div class="field"><label>Semester <span class="req">*</span></label>
+      <select id="ay_sem" onchange="updateAY()">
+        <option value="">— select —</option>
+        <option>1st Semester</option>
+        <option>2nd Semester</option>
+        <option>Summer</option>
+      </select>
+      {% if curriculum_term %}<div class="hint">Curriculum: {{ curriculum_term }}</div>{% else %}<div class="hint">Elective / specialization course: choose the semester it is offered.</div>{% endif %}
+    </div>
+    <div class="field span2" id="ay_err" style="display:none"><div class="req-msg">A.Y. and Semester is required. Choose both an academic year and a semester.</div></div>
+    <input type="hidden" id="f_ay_semester" value="{{ course.ay_semester }}">
   </div></div>
 </div>
 
@@ -210,21 +238,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <!-- 6. Grading System -->
 <div class="sec" id="sec-grading">
-  <div class="sec-hdr"><h2>6. Grading System</h2><p>Standard MSU-IIT grade equivalents (fixed)</p></div>
+  <div class="sec-hdr"><h2>6. Grading System</h2><p>Score ranges and their grade equivalents. Add, remove or reorder rows as needed.</p></div>
   <div class="card">
-    <table style="border-collapse:collapse;font-size:.85rem;width:360px">
-      <tr style="background:#1e3a5f;color:white">
-        <th style="padding:8px 12px;border:1px solid #15294a">% Score</th>
-        <th style="padding:8px 12px;border:1px solid #15294a">Grade</th>
-        <th style="padding:8px 12px;border:1px solid #15294a">% Score</th>
-        <th style="padding:8px 12px;border:1px solid #15294a">Grade</th>
-      </tr>
-      {% for row in [('97–100%','1.00','82–84%','2.25'),('94–96%','1.25','79–81%','2.50'),('91–93%','1.50','76–78%','2.75'),('88–90%','1.75','75%','3.00'),('85–87%','2.00','Below 75%','5.00')] %}
-      <tr>
-        {% for cell in row %}<td style="padding:6px 12px;border:1px solid #d0d8e8;text-align:center">{{ cell }}</td>{% endfor %}
-      </tr>
-      {% endfor %}
+    <h3>Grade Equivalents</h3>
+    <table class="gs-tbl">
+      <thead><tr><th style="width:36px">#</th><th>Score Range</th><th style="width:130px">Grade</th><th style="width:96px"></th></tr></thead>
+      <tbody id="gs-list"></tbody>
     </table>
+    <div class="hint">Type the range as it should appear in the syllabus, e.g. "97% – 100%", "75%" or "Below 75%". Rows print in this order, split into two columns.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn-add-row" onclick="addGradeRow()">+ Add Range</button>
+      <button class="btn-add-row" onclick="resetGrading()">↺ Reset to MSU-IIT default</button>
+    </div>
   </div>
 </div>
 
@@ -262,6 +287,8 @@ let learningPlan  = {{ course.learning_plan | tojson }};
 let assessmentBP  = {{ course.assessment_blueprint | tojson }};
 let references    = {{ course.references | tojson }};
 let policies      = {{ course.policies | tojson }};
+let gradingSystem = {{ course.grading_system | tojson }};
+const DEFAULT_GRADING = {{ default_grading | tojson }};
 let currentPloMap = {{ course.plo_map | tojson }};
 
 // ── Navigation ───────────────────────────────────────────────────────────────
@@ -275,6 +302,7 @@ function show(name, el) {
   if (name === 'assessment') renderAssessment();
   if (name === 'references') renderReferences();
   if (name === 'policies')   renderPolicies();
+  if (name === 'grading')    renderGrading();
 }
 
 // ── CLOs ─────────────────────────────────────────────────────────────────────
@@ -614,6 +642,114 @@ function removePolicy(i) {
   triggerUnsaved();
 }
 
+// ── A.Y. and Semester (required) ─────────────────────────────────────────────
+const CURRICULUM_SEMESTER = {{ curriculum_semester | tojson }};
+
+function initAY() {
+  const raw = document.getElementById('f_ay_semester').value || '';
+  const m = raw.match(/(\d{4})\s*[-–]\s*(\d{4})/);
+  const now = new Date();
+  const base = now.getMonth() >= 5 ? now.getFullYear() : now.getFullYear() - 1;  // A.Y. starts mid-year
+  const years = [];
+  for (let y = base - 2; y <= base + 4; y++) years.push(y);
+  if (m && !years.includes(+m[1])) { years.push(+m[1]); years.sort(); }
+  const ySel = document.getElementById('ay_year');
+  ySel.innerHTML = '<option value="">— select —</option>' +
+    years.map(y => `<option value="${y}–${y+1}">${y}–${y+1}</option>`).join('');
+  if (m) ySel.value = `${m[1]}–${+m[1]+1}`;
+
+  let sem = '';
+  if (/summer|mid-?year/i.test(raw)) sem = 'Summer';
+  else if (/2nd|second/i.test(raw)) sem = '2nd Semester';
+  else if (/1st|first/i.test(raw)) sem = '1st Semester';
+  else sem = CURRICULUM_SEMESTER;  // core courses: preselect the curriculum's semester
+  document.getElementById('ay_sem').value = sem;
+  // Normalise the stored value to what the dropdowns show (saved on the next edit).
+  document.getElementById('f_ay_semester').value = composeAY();
+  markAY(false);
+}
+
+function composeAY() {
+  return [document.getElementById('ay_year').value, document.getElementById('ay_sem').value]
+    .filter(Boolean).join(', ');
+}
+
+function ayComplete() {
+  return !!(document.getElementById('ay_year').value && document.getElementById('ay_sem').value);
+}
+
+function markAY(showErrors) {
+  ['ay_year','ay_sem'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.toggle('missing', !el.value);
+  });
+  document.getElementById('ay_err').style.display = (showErrors && !ayComplete()) ? '' : 'none';
+}
+
+function updateAY() {
+  document.getElementById('f_ay_semester').value = composeAY();
+  markAY(true);
+  triggerUnsaved();
+}
+
+// Downloads need A.Y. and Semester; jump to Course Info if it is missing.
+function requireAY() {
+  if (ayComplete()) return true;
+  show('info', document.querySelector('.nav-i'));
+  markAY(true);
+  setStatus('Set the A.Y. and Semester before downloading the syllabus.', 'err');
+  return false;
+}
+
+// ── Grading System ────────────────────────────────────────────────────────────
+function renderGrading() {
+  const el = document.getElementById('gs-list');
+  el.innerHTML = '';
+  const n = gradingSystem.length;
+  gradingSystem.forEach((row, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="gs-num">${i+1}</td>
+      <td><input placeholder="e.g. 97% – 100%" value="${esc(row.range||'')}" oninput="gradingSystem[${i}].range=this.value;triggerUnsaved()"></td>
+      <td><input placeholder="e.g. 1.00" value="${esc(row.grade||'')}" oninput="gradingSystem[${i}].grade=this.value;triggerUnsaved()"></td>
+      <td class="gs-act">
+        <button title="Move up" ${i===0?'disabled':''} onclick="moveGradeRow(${i},-1)">▲</button>
+        <button title="Move down" ${i===n-1?'disabled':''} onclick="moveGradeRow(${i},1)">▼</button>
+        <button class="gs-del" title="Remove" onclick="removeGradeRow(${i})">✕</button>
+      </td>`;
+    el.appendChild(tr);
+  });
+}
+
+function addGradeRow() {
+  gradingSystem.push({range:'', grade:''});
+  renderGrading();
+  triggerUnsaved();
+  const inputs = document.querySelectorAll('#gs-list tr:last-child input');
+  if (inputs.length) inputs[0].focus();
+}
+
+function removeGradeRow(i) {
+  gradingSystem.splice(i, 1);
+  renderGrading();
+  triggerUnsaved();
+}
+
+function moveGradeRow(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= gradingSystem.length) return;
+  [gradingSystem[i], gradingSystem[j]] = [gradingSystem[j], gradingSystem[i]];
+  renderGrading();
+  triggerUnsaved();
+}
+
+function resetGrading() {
+  if (!confirm('Replace this course\'s grading system with the standard MSU-IIT scale?')) return;
+  gradingSystem = DEFAULT_GRADING.map(r => ({...r}));
+  renderGrading();
+  triggerUnsaved();
+}
+
 // ── Save / Download ───────────────────────────────────────────────────────────
 function collectData() {
   return {
@@ -630,6 +766,7 @@ function collectData() {
     assessment_blueprint: assessmentBP,
     references,
     policies,
+    grading_system: gradingSystem,
   };
 }
 
@@ -652,11 +789,13 @@ function saveSyllabus() {
 }
 
 function downloadDocx() {
+  if (!requireAY()) return;
   saveSyllabus();
   setTimeout(() => { window.location = `/syllabus/${encodeURIComponent(COURSE_CODE)}/docx`; }, 600);
 }
 
 function downloadPdf() {
+  if (!requireAY()) return;
   saveSyllabus();
   setTimeout(() => { window.location = `/syllabus/${encodeURIComponent(COURSE_CODE)}/pdf`; }, 600);
 }
@@ -683,6 +822,7 @@ function setStatus(msg, type) {
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+initAY();
 renderCLOs();
 renderSyncBadge();
 </script>

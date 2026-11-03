@@ -3,6 +3,7 @@ import jinja2
 import subprocess
 import os
 import json
+import re
 import threading
 
 app = Flask(__name__)
@@ -372,6 +373,42 @@ DEFAULT_POLICIES = [
 ]
 
 
+# Standard MSU-IIT grade equivalents; seeds each course's editable grading system.
+DEFAULT_GRADING_SYSTEM = [
+    {'range': '97% – 100%', 'grade': '1.00'},
+    {'range': '94% – 96%',  'grade': '1.25'},
+    {'range': '91% – 93%',  'grade': '1.50'},
+    {'range': '88% – 90%',  'grade': '1.75'},
+    {'range': '85% – 87%',  'grade': '2.00'},
+    {'range': '82% – 84%',  'grade': '2.25'},
+    {'range': '79% – 81%',  'grade': '2.50'},
+    {'range': '76% – 78%',  'grade': '2.75'},
+    {'range': '75%',        'grade': '3.00'},
+    {'range': 'Below 75%',  'grade': '5.00'},
+]
+
+
+# Semester each core course is fixed to in the curriculum ("Distribution of Courses by
+# Semester"). Electives/specialization courses have no fixed term; the user picks one.
+CURRICULUM_SEMESTERS = {
+    'CSC201': ('1st Semester', 'First Year, First Semester'),
+    'CSC202': ('1st Semester', 'First Year, First Semester'),
+    'CSC203': ('2nd Semester', 'First Year, Second Semester'),
+    'CSC204': ('2nd Semester', 'First Year, Second Semester'),
+    'CCC298': ('2nd Semester', 'First Year, Second Semester'),
+    'CCC296': ('1st Semester', 'Second Year, First Semester'),
+    'CCC297': ('1st Semester', 'Second Year, First Semester'),
+    'CSC299': ('2nd Semester', 'Second Year, Second Semester'),
+}
+
+_AY_SEMESTER_RE = re.compile(r'^\s*\d{4}\s*[-–]\s*\d{4}\s*,\s*\S')
+
+
+def ay_semester_complete(value):
+    """True when the value has both an academic year and a semester, e.g. '2026–2027, 1st Semester'."""
+    return bool(_AY_SEMESTER_RE.match(value or ''))
+
+
 def get_course_index(data, code):
     for i, c in enumerate(data.get('courses', [])):
         if c.get('code') == code:
@@ -388,6 +425,7 @@ def ensure_syllabus_fields(course):
     course.setdefault('assessment_blueprint', [])
     course.setdefault('references', {'textbooks': [''], 'journals': [''], 'online': ['']})
     course.setdefault('policies', list(DEFAULT_POLICIES))
+    course.setdefault('grading_system', [dict(r) for r in DEFAULT_GRADING_SYSTEM])
     # Build clo_plo_map from existing plo_map when first opening syllabus editor
     if not course.get('clo_plo_map'):
         plo_map = course.get('plo_map', {})
@@ -408,7 +446,11 @@ def syllabus_editor(code):
     course = dict(data['courses'][idx])
     ensure_syllabus_fields(course)
     outcomes = data.get('outcomes', DEFAULTS['outcomes'])
-    return render_template('syllabus.html', course=course, outcomes=outcomes)
+    sem = CURRICULUM_SEMESTERS.get(code)
+    return render_template('syllabus.html', course=course, outcomes=outcomes,
+                           default_grading=DEFAULT_GRADING_SYSTEM,
+                           curriculum_semester=sem[0] if sem else '',
+                           curriculum_term=sem[1] if sem else '')
 
 
 @app.route('/syllabus/<code>/save', methods=['POST'])
@@ -420,7 +462,8 @@ def save_syllabus(code):
         return jsonify({'error': f'Course {code} not found'}), 404
 
     for field in ['title', 'desc', 'credits', 'prereq', 'modality', 'contact_hours', 'ay_semester',
-                  'clos', 'clo_plo_map', 'learning_plan', 'assessment_blueprint', 'references', 'policies']:
+                  'clos', 'clo_plo_map', 'learning_plan', 'assessment_blueprint', 'references', 'policies',
+                  'grading_system']:
         if field in payload:
             data['courses'][idx][field] = payload[field]
 
@@ -450,6 +493,8 @@ def download_syllabus_pdf(code):
         return jsonify({'error': f'Course {code} not found'}), 404
     course = dict(data['courses'][idx])
     ensure_syllabus_fields(course)
+    if not ay_semester_complete(course.get('ay_semester')):
+        return ('A.Y. and Semester is required. Set it in Course Info before downloading the syllabus.', 400)
     outcomes_raw = data.get('outcomes', DEFAULTS['outcomes'])
     outcomes = []
     for o in outcomes_raw:
@@ -482,6 +527,8 @@ def download_syllabus_docx(code):
         return jsonify({'error': f'Course {code} not found'}), 404
     course = dict(data['courses'][idx])
     ensure_syllabus_fields(course)
+    if not ay_semester_complete(course.get('ay_semester')):
+        return ('A.Y. and Semester is required. Set it in Course Info before downloading the syllabus.', 400)
     outcomes_raw = data.get('outcomes', DEFAULTS['outcomes'])
     # Enrich outcomes with full PLO descriptions for the alignment table
     outcomes = []
